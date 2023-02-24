@@ -26,14 +26,41 @@ public class Lexer {
         }
 
         char c = input.charAt(pos);
-        if (Character.isDigit(c)) {
+        if (Character.isDigit(c))
             curToken = this.getNumber();
-        } else if ("()+-*".indexOf(c) != -1) {
-            pos += 1;
-            if(input.charAt(pos) == '*' && c == '*')
-                curToken = "**";
-            else
-                curToken = String.valueOf(c);
+        else {
+            if ("()+-*xyz".indexOf(c) != -1) {
+                pos += 1;
+                if(input.charAt(pos) == '*' && c == '*')
+                    curToken = "**";
+                else
+                    curToken = String.valueOf(c);
+            }
+            else{
+                System.out.println("cannot identify!");
+            }
+        }
+    }
+
+    public void nextNumber(){
+        if (pos == input.length()) {
+            return;
+        }
+
+        char c = input.charAt(pos);
+        if ("+-".indexOf(c) != -1)
+            curToken = this.getNumber();
+        else {
+            if ("()+-*xyz".indexOf(c) != -1) {
+                pos += 1;
+                if(input.charAt(pos) == '*' && c == '*')
+                    curToken = "**";
+                else
+                    curToken = String.valueOf(c);
+            }
+            else{
+                System.out.println("cannot identify!");
+            }
         }
     }
 

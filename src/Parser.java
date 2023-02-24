@@ -1,4 +1,5 @@
 import expr.*;
+import expr.Number;
 
 import java.math.BigInteger;
 
@@ -47,9 +48,26 @@ public class Parser {
             }
             return expr;
         } else {
-            BigInteger num = new BigInteger(lexer.peek());
-            lexer.next();
-            return new expr.Number(num);
+            if(lexer.peek().equals("x") || lexer.peek().equals("y") || lexer.peek().equals("z")){
+                Var var = new Var(lexer.peek());
+                lexer.next();
+                if(lexer.peek().equals("**")){
+                    lexer.next();
+                    var.setIndex(Integer.parseInt(lexer.peek()));
+                    lexer.next();
+                }
+                return var;
+            }
+            else{
+                expr.Number number = new Number(lexer.peek());
+                lexer.next();
+                if(lexer.peek().equals("**")){
+                    lexer.next();
+                    number.setIndex(Integer.parseInt(lexer.peek()));
+                    lexer.next();
+                }
+                return number;
+            }
         }
     }
 }
