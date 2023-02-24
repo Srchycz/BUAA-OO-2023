@@ -28,14 +28,16 @@ public class Expr implements Factor{
         StringBuilder sb = new StringBuilder();
         sb.append(iter.next().toString());
         if (iter.hasNext()) {
-            sb.append(" ");
+            sb.append(" + ");
             sb.append(iter.next().toString());
-            sb.append(" +");
             while (iter.hasNext()) {
-                sb.append(" ");
+                sb.append(" + ");
                 sb.append(iter.next().toString());
-                sb.append(" +");
             }
+        }
+        if(index != 1){
+            sb.append("**");
+            sb.append(index);
         }
         return sb.toString();
     }

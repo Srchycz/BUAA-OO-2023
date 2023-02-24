@@ -1,6 +1,7 @@
 package expr;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Term {
 
@@ -25,9 +26,21 @@ public class Term {
         return this.sign;
     }
 
-    /*@Override
+    @Override
     public String toString(){
-
-    }*/
+        Iterator<Factor> iter = factors.iterator();
+        StringBuilder sb = new StringBuilder();
+        sb.append(sign);
+        sb.append(iter.next().toString());
+        if (iter.hasNext()) {
+            sb.append(" * ");
+            sb.append(iter.next().toString());
+            while (iter.hasNext()) {
+                sb.append(" * ");
+                sb.append(iter.next().toString());
+            }
+        }
+        return sb.toString();
+    }
 
 }

@@ -25,7 +25,7 @@ public class Parser {
         Term term = new Term();
         if(lexer.peek().equals("+") || lexer.peek().equals("-")){
             term.setSign(lexer.peek());
-            lexer.next();
+            lexer.nextNumber();
         }
         term.addFactor(parseFactor());
 
@@ -42,7 +42,7 @@ public class Parser {
             Factor expr = parseExpr();
             lexer.next();
             if(lexer.peek().equals("**")){
-                lexer.next();
+                lexer.nextNumber();
                 expr.setIndex(Integer.parseInt(lexer.peek()));
                 lexer.next();
             }
@@ -52,7 +52,7 @@ public class Parser {
                 Var var = new Var(lexer.peek());
                 lexer.next();
                 if(lexer.peek().equals("**")){
-                    lexer.next();
+                    lexer.nextNumber();
                     var.setIndex(Integer.parseInt(lexer.peek()));
                     lexer.next();
                 }
@@ -62,7 +62,7 @@ public class Parser {
                 expr.Number number = new Number(lexer.peek());
                 lexer.next();
                 if(lexer.peek().equals("**")){
-                    lexer.next();
+                    lexer.nextNumber();
                     number.setIndex(Integer.parseInt(lexer.peek()));
                     lexer.next();
                 }

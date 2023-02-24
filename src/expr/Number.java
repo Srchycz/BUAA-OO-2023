@@ -21,4 +21,16 @@ public class Number implements Factor{
     public void setIndex(int index) {
         this.index = index;
     }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(num);
+        if(index != 1){
+            sb.append("**");
+            sb.append(index);
+        }
+        return sb.toString();
+    }
+
 }
