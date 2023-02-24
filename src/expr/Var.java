@@ -4,10 +4,13 @@ public class Var implements Factor{
 
     private final String var;
 
-    private final int index;
+    private int index;
 
-    public Var(String x, int c){
+    public Var(String x){
         this.var = x;
+    }
+
+    public void setIndex(int c){
         this.index = c;
     }
 }

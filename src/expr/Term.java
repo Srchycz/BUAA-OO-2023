@@ -1,16 +1,33 @@
 package expr;
 
+import java.util.ArrayList;
+
 public class Term {
 
     private ArrayList<Factor> factors;
 
-    public Term(){this.factors = new ArrayList<Factor>();}
+    private String sign;
 
-    public addFactor(Factor x){this.add(x);}
+    public Term(){
+        this.factors = new ArrayList<Factor>();
+        this.sign = "+";
+    }
 
-    @Override
+    public void addFactor(Factor x){
+        this.factors.add(x);
+    }
+
+    public void setSign(String f){
+        this.sign = f;
+    }
+
+    public String getSign(){
+        return this.sign;
+    }
+
+    /*@Override
     public String toString(){
 
-    }
+    }*/
 
 }

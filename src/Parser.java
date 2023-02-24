@@ -1,5 +1,55 @@
-import expr.*
+import expr.*;
+
+import java.math.BigInteger;
 
 public class Parser {
+    private final Lexer lexer;
 
+    public Parser(Lexer lexer) {
+        this.lexer = lexer;
+    }
+
+    public Expr parseExpr() {
+        Expr expr = new Expr();
+        expr.addTerm(parseTerm());
+
+        while (lexer.peek().equals("+") || lexer.peek().equals("-")) {
+            lexer.next();
+            expr.addTerm(parseTerm());
+        }
+        return expr;
+    }
+
+    public Term parseTerm() {
+        Term term = new Term();
+        if(lexer.peek().equals("+") || lexer.peek().equals("-")){
+            term.setSign(lexer.peek());
+            lexer.next();
+        }
+        term.addFactor(parseFactor());
+
+        while (lexer.peek().equals("*")) {
+            lexer.next();
+            term.addFactor(parseFactor());
+        }
+        return term;
+    }
+
+    public Factor parseFactor() {
+        if (lexer.peek().equals("(")) {
+            lexer.next();
+            Factor expr = parseExpr();
+            lexer.next();
+            if(lexer.peek().equals("**")){
+                lexer.next();
+                expr.setIndex(Integer.parseInt(lexer.peek()));
+                lexer.next();
+            }
+            return expr;
+        } else {
+            BigInteger num = new BigInteger(lexer.peek());
+            lexer.next();
+            return new expr.Number(num);
+        }
+    }
 }
