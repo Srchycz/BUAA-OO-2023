@@ -26,31 +26,33 @@ public class Lexer {
         }
 
         char c = input.charAt(pos);
-        if (Character.isDigit(c))
+        if (Character.isDigit(c)) {
             curToken = this.getNumber();
+        }
         else {
             if ("()+-*xyz".indexOf(c) != -1) {
                 ++ pos;
-                if(c == '*' && input.charAt(pos) == '*'){
+                if (c == '*' && input.charAt(pos) == '*') {
                     curToken = "**";
                     ++ pos;
                 }
-                else
+                else {
                     curToken = String.valueOf(c);
+                }
             }
-            else{
+            else {
                 System.out.println("cannot identify!");
             }
         }
     }
 
-    public void nextNumber(){
+    public void nextNumber() {
         if (pos == input.length()) {
             return;
         }
 
         char c = input.charAt(pos);
-        if ("+-".indexOf(c) != -1){
+        if ("+-".indexOf(c) != -1) {
             StringBuilder sb = new StringBuilder();
             sb.append(c);
             ++pos;
@@ -58,10 +60,10 @@ public class Lexer {
             curToken = sb.toString();
         }
         else {
-            if(Character.isDigit(c)){
+            if (Character.isDigit(c)) {
                 curToken = this.getNumber();
             }
-            else{
+            else {
                 curToken = String.valueOf(c);
                 ++ pos;
             }

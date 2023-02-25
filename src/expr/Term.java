@@ -6,74 +6,79 @@ import java.util.Iterator;
 
 public class Term {
 
-    public ArrayList<Factor> factors;
+    private ArrayList<Factor> factors;
 
     private String sign;
 
-    public Term(){
+    public Term() {
         this.factors = new ArrayList<Factor>();
         this.sign = "+";
     }
 
-    public Term(Term src){
+    public Term(Term src) {
         this.factors = new ArrayList<>();
         factors.addAll(src.factors);
         this.sign = src.sign;
     }
 
-    public void addFactor(Factor x){
+    public void addFactor(Factor x) {
         this.factors.add(x);
     }
 
-    public void mergeTerm(Term t){
-        this.factors.addAll(t.factors);
+    public void mergeTerm(Term t) {
+        this.factors.addAll(t.getFactors());
         mergeSign(t.getSign());
     }
 
-    public void removeFactor(Factor x){
+    public void removeFactor(Factor x) {
         this.factors.remove(x);
     }
 
-
-    public void setSign(String f){
+    public void setSign(String f) {
         this.sign = f;
     }
 
-    public String getSign(){
+    public String getSign() {
         return this.sign;
     }
 
-    public void mergeSign(String f){
-        if(f.equals("-")){
-            this.sign = (this.sign.equals("-"))? "+" : "-";
+    public void mergeSign(String f) {
+        if (f.equals("-"))
+        {
+            this.sign = (this.sign.equals("-")) ? "+" : "-";
         }
     }
 
+    public ArrayList<Factor> getFactors() {
+        return factors;
+    }
+
     @Override
-    public String toString(){
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
-        for(Factor factor : factors){
-            if(factor instanceof Expr){
+        for (Factor factor : factors) {
+            if (factor instanceof Expr) {
                 int idx = ((Expr) factor).getIndex();
-                if(idx == 0){
+                if (idx == 0) {
                     this.removeFactor(factor);
                     Number one = new Number(BigInteger.ONE);
                     this.addFactor(one);
                     continue;
                 }
-                while(idx > 1){
+                while (idx > 1) {
                     --idx;
                     Expr factorCopy = new Expr(((Expr) factor));
-                    this.factors.add(factorCopy);
+                    this.addFactor(factorCopy);
                 }
                 factor.setIndex(idx);
 
-                Iterator<Term> iter = ((Expr) factor).terms.iterator();
+                Iterator<Term> iter = ((Expr) factor).getTerms().iterator();
                 Term temp = new Term(this);
                 temp.mergeTerm(iter.next());
                 temp.removeFactor(factor);
                 sb.append(temp);
-                while (iter.hasNext()){
+                while (iter.hasNext()) {
                     //sb.append(" + ");
                     Term a = new Term(this);
                     a.mergeTerm(iter.next());

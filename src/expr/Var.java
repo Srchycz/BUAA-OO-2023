@@ -1,6 +1,7 @@
 package expr;
 
-public class Var implements Factor{
+public class Var implements Factor
+{
 
     private final String var;
 
@@ -16,24 +17,29 @@ public class Var implements Factor{
         this.sign = sign;
     }
 
-
-
-    public Var(String x){
+    public Var(String x)
+    {
         this.var = x;
         this.index = 1;
         this.sign = "+";
     }
 
-    public void setIndex(int c){
+    public void setIndex(int c)
+    {
         this.index = c;
     }
 
     @Override
-    public String toString(){
-        if(index == 0) return String.valueOf(1);
+    public String toString()
+    {
+        if (index == 0)
+        {
+            return String.valueOf(1);
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(var);
-        if(index > 1){
+        if (index > 1)
+        {
             sb.append("**");
             sb.append(index);
         }
