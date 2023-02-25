@@ -43,23 +43,16 @@ public class Term {
 
     @Override
     public String toString(){
-        /*
-        Iterator<Factor> iter = factors.iterator();
-        StringBuilder sb = new StringBuilder();
-        sb.append(sign);
-        sb.append(iter.next().toString());
-        if (iter.hasNext()) {
-            sb.append(" * ");
-            sb.append(iter.next().toString());
-            while (iter.hasNext()) {
-                sb.append(" * ");
-                sb.append(iter.next().toString());
-            }
-        }
-        return sb.toString();*/
         StringBuilder sb = new StringBuilder();
         for(Factor factor : factors){
             if(factor instanceof Expr){
+                int idx = ((Expr) factor).getIndex();
+                while(idx > 1){
+                    --idx;
+                    Expr factorCopy = new Expr(((Expr) factor));
+                    this.factors.add(factorCopy);
+                }
+                factor.setIndex(idx);
                 Iterator<Term> iter = ((Expr) factor).terms.iterator();
                 Term temp = new Term(this);
                 temp.addFactor(iter.next().factors);
@@ -75,6 +68,7 @@ public class Term {
                 return sb.toString();
             }
         }
+
         Iterator<Factor> iter = factors.iterator();
         sb.append(sign);
         sb.append(iter.next().toString());
