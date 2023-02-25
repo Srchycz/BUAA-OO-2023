@@ -1,5 +1,6 @@
 package expr;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -24,8 +25,9 @@ public class Term {
         this.factors.add(x);
     }
 
-    public void addFactor(ArrayList<Factor> factors){
-        this.factors.addAll(factors);
+    public void mergeTerm(Term t){
+        this.factors.addAll(t.factors);
+        mergeSign(t.getSign());
     }
 
     public void removeFactor(Factor x){
@@ -41,27 +43,40 @@ public class Term {
         return this.sign;
     }
 
+    public void mergeSign(String f){
+        if(f.equals("-")){
+            this.sign = (this.sign.equals("-"))? "+" : "-";
+        }
+    }
+
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         for(Factor factor : factors){
             if(factor instanceof Expr){
                 int idx = ((Expr) factor).getIndex();
+                if(idx == 0){
+                    this.removeFactor(factor);
+                    Number one = new Number(BigInteger.ONE);
+                    this.addFactor(one);
+                    continue;
+                }
                 while(idx > 1){
                     --idx;
                     Expr factorCopy = new Expr(((Expr) factor));
                     this.factors.add(factorCopy);
                 }
                 factor.setIndex(idx);
+
                 Iterator<Term> iter = ((Expr) factor).terms.iterator();
                 Term temp = new Term(this);
-                temp.addFactor(iter.next().factors);
+                temp.mergeTerm(iter.next());
                 temp.removeFactor(factor);
                 sb.append(temp);
                 while (iter.hasNext()){
-                    sb.append(" + ");
+                    //sb.append(" + ");
                     Term a = new Term(this);
-                    a.addFactor(iter.next().factors);
+                    a.mergeTerm(iter.next());
                     a.removeFactor(factor);
                     sb.append(a);
                 }
@@ -72,13 +87,9 @@ public class Term {
         Iterator<Factor> iter = factors.iterator();
         sb.append(sign);
         sb.append(iter.next().toString());
-        if (iter.hasNext()) {
-            sb.append(" * ");
+        while (iter.hasNext()) {
+            sb.append("*");
             sb.append(iter.next().toString());
-            while (iter.hasNext()) {
-                sb.append(" * ");
-                sb.append(iter.next().toString());
-            }
         }
         return sb.toString();
     }

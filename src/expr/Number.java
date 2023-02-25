@@ -24,9 +24,10 @@ public class Number implements Factor{
 
     @Override
     public String toString(){
+        if(index == 0) return String.valueOf(1);
         StringBuilder sb = new StringBuilder();
         sb.append(num);
-        if(index != 1){
+        if(index > 1){
             sb.append("**");
             sb.append(index);
         }
