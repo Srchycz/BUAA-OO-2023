@@ -11,7 +11,7 @@ public class Term {
     private String sign;
 
     public Term() {
-        this.factors = new ArrayList<Factor>();
+        this.factors = new ArrayList<>();
         this.sign = "+";
     }
 
