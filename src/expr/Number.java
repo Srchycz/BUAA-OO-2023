@@ -22,6 +22,10 @@ public class Number implements Factor {
         this.index = index;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     @Override
     public String toString() {
         if (index == 0) {

@@ -24,9 +24,12 @@ public class Var implements Factor
         this.sign = "+";
     }
 
-    public void setIndex(int c)
-    {
+    public void setIndex(int c) {
         this.index = c;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @Override

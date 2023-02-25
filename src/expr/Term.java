@@ -57,15 +57,15 @@ public class Term {
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        for (Factor factor : factors) {
+        Iterator<Factor> factorIterator = factors.iterator();
+        while (factorIterator.hasNext()) {
+            Factor factor = factorIterator.next();
+            int idx = factor.getIndex();
+            if (idx == 0) {
+                factorIterator.remove();
+                continue;
+            }
             if (factor instanceof Expr) {
-                int idx = ((Expr) factor).getIndex();
-                if (idx == 0) {
-                    this.removeFactor(factor);
-                    Number one = new Number(BigInteger.ONE);
-                    this.addFactor(one);
-                    continue;
-                }
                 while (idx > 1) {
                     --idx;
                     Expr factorCopy = new Expr(((Expr) factor));
@@ -87,6 +87,11 @@ public class Term {
                 }
                 return sb.toString();
             }
+        }
+
+        if (factors.isEmpty()) {
+            Number one = new Number(BigInteger.ONE);
+            this.addFactor(one);
         }
 
         Iterator<Factor> iter = factors.iterator();
