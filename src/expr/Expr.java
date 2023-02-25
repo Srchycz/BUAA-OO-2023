@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public class Expr implements Factor{
 
-    private ArrayList<Term> terms;
+    public ArrayList<Term> terms;
 
     private int index;
 
