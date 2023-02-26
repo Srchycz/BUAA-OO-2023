@@ -43,8 +43,7 @@ public class Term {
     }
 
     public void mergeSign(String f) {
-        if (f.equals("-"))
-        {
+        if (f.equals("-")) {
             this.sign = (this.sign.equals("-")) ? "+" : "-";
         }
     }

@@ -1,8 +1,10 @@
+import expr.Var;
+import expr.Term;
+import expr.Expression;
+import expr.Factor;
+import expr.Variable;
 import expr.Expr;
 import expr.Number;
-import expr.Factor;
-import expr.Term;
-import expr.Var;
 
 public class Parser {
     private final Lexer lexer;
@@ -73,6 +75,56 @@ public class Parser {
                 }
                 return number;
             }
+        }
+    }
+
+    public Expression parseExpression() {
+        Expression expression = new Expression();
+
+        while (lexer.peek().equals("+") || lexer.peek().equals("-")) {
+            String c = lexer.peek();
+            lexer.next();
+            Variable variable = parseVariable();
+            expression.addVariable(variable);
+            variable.setSign(c);
+        }
+        return expression;
+
+    }
+
+    public Variable parseVariable() {
+        Variable variable = new Variable();
+        parseFac(variable);
+
+        while (lexer.peek().equals("*")) {
+            lexer.next();
+            parseFac(variable);
+        }
+        return variable;
+    }
+
+    private void parseFac(Variable variable) {
+        if (lexer.peek().equals("x") || lexer.peek().equals("y") || lexer.peek().equals("z")) {
+            String var = lexer.peek();
+            int c = 1;
+            lexer.next();
+            if (lexer.peek().equals("**")) {
+                lexer.next();
+                c = Integer.parseInt(lexer.peek());
+                lexer.next();
+            }
+            variable.addIdx(var, c);
+        }
+        else {
+            String num = lexer.peek();
+            int c = 1;
+            lexer.next();
+            if (lexer.peek().equals("**")) {
+                lexer.next();
+                c = Integer.parseInt(lexer.peek());
+                lexer.next();
+            }
+            variable.mulCoe(num, c);
         }
     }
 }

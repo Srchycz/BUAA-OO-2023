@@ -1,4 +1,5 @@
 import expr.Expr;
+import expr.Expression;
 
 import java.util.Scanner;
 
@@ -9,9 +10,14 @@ public class Main {
 
         Lexer lexer = new Lexer(simplifySign(input.replaceAll("\\s+","")));
         Parser parser = new Parser(lexer);
-
         Expr expr = parser.parseExpr();
-        System.out.println(expr);
+        //System.out.println(expr);
+
+        Lexer lexer1 = new Lexer(simplifySign(expr.toString().replaceAll("\\s","")));
+        Parser parser1 = new Parser(lexer1);
+        Expression expression = parser1.parseExpression();
+        expression.simplify();
+        System.out.println(expression);
     }
 
     public static String simplifySign(String input) {
@@ -41,6 +47,9 @@ public class Main {
                 sb.append(input.charAt(pos));
                 ++ pos;
             }
+        }
+        if (sb.toString().equals("")) {
+            return "+0";
         }
         return sb.toString();
     }
