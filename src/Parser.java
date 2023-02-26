@@ -83,7 +83,7 @@ public class Parser {
 
         while (lexer.peek().equals("+") || lexer.peek().equals("-")) {
             String c = lexer.peek();
-            lexer.next();
+            lexer.nextNumber();
             Variable variable = parseVariable();
             expression.addVariable(variable);
             variable.setSign(c);
@@ -97,7 +97,7 @@ public class Parser {
         parseFac(variable);
 
         while (lexer.peek().equals("*")) {
-            lexer.next();
+            lexer.nextNumber();
             parseFac(variable);
         }
         return variable;
@@ -109,7 +109,7 @@ public class Parser {
             int c = 1;
             lexer.next();
             if (lexer.peek().equals("**")) {
-                lexer.next();
+                lexer.nextNumber();
                 c = Integer.parseInt(lexer.peek());
                 lexer.next();
             }
@@ -120,7 +120,7 @@ public class Parser {
             int c = 1;
             lexer.next();
             if (lexer.peek().equals("**")) {
-                lexer.next();
+                lexer.nextNumber();
                 c = Integer.parseInt(lexer.peek());
                 lexer.next();
             }

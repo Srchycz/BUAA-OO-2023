@@ -25,10 +25,6 @@ public class Variable {
         return coe;
     }
 
-    public void setCoe(BigInteger coe) {
-        this.coe = coe;
-    }
-
     public int getYidx() {
         return yidx;
     }

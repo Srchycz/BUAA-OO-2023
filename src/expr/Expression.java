@@ -50,7 +50,7 @@ public class Expression {
             sb.append(variable);
         }
         if (sb.toString().equals("")) {
-            sb.append("+0");
+            return "0";
         }
         return sb.toString();
     }
