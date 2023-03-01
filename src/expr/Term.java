@@ -52,9 +52,37 @@ public class Term {
         return factors;
     }
 
+    private void unfold() {
+        ArrayList<Expr> facs = new ArrayList<>();
+        Iterator<Factor> factorIterator = factors.iterator();
+        while (factorIterator.hasNext()) {
+            Factor factor = factorIterator.next();
+            if (factor instanceof Expr) {
+                int idx = factor.getIndex();
+                if (idx > 1) {
+                    factor.setIndex(1);
+                    Expr factorCopy = new Expr(((Expr) factor));
+                    factorCopy.setIndex(idx - 1);
+                    facs.add(factorCopy);
+                }
+            }
+        }
+        if (!facs.isEmpty()) {
+            for (Expr fac : facs) {
+                int idx = fac.getIndex();
+                while (idx > 0) {
+                    --idx;
+                    Expr facCopy = new Expr(fac);
+                    this.addFactor(facCopy);
+                }
+            }
+        }
+    }
+
     @Override
     public String toString()
     {
+        unfold();
         StringBuilder sb = new StringBuilder();
         Iterator<Factor> factorIterator = factors.iterator();
         while (factorIterator.hasNext()) {
@@ -65,13 +93,6 @@ public class Term {
                 continue;
             }
             if (factor instanceof Expr) {
-                while (idx > 1) {
-                    --idx;
-                    Expr factorCopy = new Expr(((Expr) factor));
-                    this.addFactor(factorCopy);
-                }
-                factor.setIndex(idx);
-
                 Iterator<Term> iter = ((Expr) factor).getTerms().iterator();
                 Term temp = new Term(this);
                 temp.mergeTerm(iter.next());

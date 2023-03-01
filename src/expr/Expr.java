@@ -19,7 +19,7 @@ public class Expr implements Factor
     public Expr(Expr src)
     {
         this.terms = new ArrayList<>();
-        this.terms.addAll(src.terms);
+        this.terms.addAll(src.getTerms());
         this.index = 1;
     }
 
