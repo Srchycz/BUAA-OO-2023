@@ -42,12 +42,12 @@ public class Lexer {
                     break;
                 }
                 case 's': {
-                    pos += 3;
+                    pos += 4;
                     curToken = "sin";
                     break;
                 }
                 case 'c': {
-                    pos += 3;
+                    pos += 4;
                     curToken = "cos";
                     break;
                 }

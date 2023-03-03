@@ -56,3 +56,4 @@ public class Main {
         return sb.toString();
     }
 }
+   // sin(cos(x)*sin(((x))))
