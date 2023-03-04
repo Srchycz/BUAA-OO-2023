@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Term implements Cloneable{
+public class Term implements Cloneable {
 
     private ArrayList<Factor> factors;
 
@@ -61,7 +61,7 @@ public class Term implements Cloneable{
                 int idx = factor.getIndex();
                 if (idx > 1) {
                     factor.setIndex(1);
-//                    Expr factorCopy = new Expr(((Expr) factor));
+                    //Expr factorCopy = new Expr(((Expr) factor));
                     Expr factorCopy = ((Expr) factor).clone();
                     factorCopy.setIndex(idx - 1);
                     facs.add(factorCopy);
@@ -73,7 +73,7 @@ public class Term implements Cloneable{
                 int idx = fac.getIndex();
                 while (idx > 0) {
                     --idx;
-//                    Expr facCopy = new Expr(fac);
+                    //Expr facCopy = new Expr(fac);
                     Expr facCopy = fac.clone();
                     this.addFactor(facCopy);
                 }
@@ -134,7 +134,7 @@ public class Term implements Cloneable{
     public Term clone() throws CloneNotSupportedException {
         Term clone = (Term) super.clone();
         clone.factors = new ArrayList<>();
-//        clone.factors = (ArrayList<Factor>) factors.clone();
+        //clone.factors = (ArrayList<Factor>) factors.clone();
         for (Factor factor : factors) {
             clone.factors.add((Factor) factor.clone());
         }
