@@ -2,7 +2,7 @@ package expr;
 
 import java.math.BigInteger;
 
-public class Number implements Factor {
+public class Number implements Factor, Cloneable {
 
     private BigInteger num;
 
@@ -40,4 +40,8 @@ public class Number implements Factor {
         return sb.toString();
     }
 
+    @Override
+    public Number clone() throws CloneNotSupportedException {
+        return (Number) super.clone();
+    }
 }

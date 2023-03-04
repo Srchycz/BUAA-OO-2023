@@ -1,6 +1,6 @@
 package expr;
 
-public class Var implements Factor
+public class Var implements Factor, Cloneable
 {
 
     private final String var;
@@ -48,4 +48,10 @@ public class Var implements Factor
         }
         return sb.toString();
     }
+
+    @Override
+    public Var clone() throws CloneNotSupportedException {
+        return (Var) super.clone();
+    }
+
 }

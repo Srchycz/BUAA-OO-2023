@@ -44,7 +44,7 @@ public class SelfFunction {
             System.out.println("F is not match!");
             System.exit(0);
         }
-        return formula.format(expr);
+        return "(" + formula.format(expr) + ")";
     }
 
     @Override

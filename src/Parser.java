@@ -1,5 +1,11 @@
-import expr.*;
+import expr.Expr;
+import expr.Term;
 import expr.Number;
+import expr.Factor;
+import expr.TriFunc;
+import expr.Var;
+import expr.Expression;
+import expr.Variable;
 
 public class Parser {
     private final Lexer lexer;
@@ -32,7 +38,7 @@ public class Parser {
         term.addFactor(parseFactor());
 
         while (lexer.peek().equals("*")) {
-            lexer.next();
+            lexer.nextNumber();
             term.addFactor(parseFactor());
         }
         return term;

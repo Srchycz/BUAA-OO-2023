@@ -1,6 +1,6 @@
 package expr;
 
-public class TriFunc implements Factor {
+public class TriFunc implements Factor, Cloneable {
     private int index;
 
     private final String name;
@@ -38,4 +38,12 @@ public class TriFunc implements Factor {
         }
         return name + "((" + expr.toString() + "))";
     }
+
+    @Override
+    public TriFunc clone() throws CloneNotSupportedException {
+        TriFunc triFunc = (TriFunc) super.clone();
+        triFunc.expr = expr.clone();
+        return triFunc;
+    }
+
 }

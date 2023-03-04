@@ -3,7 +3,7 @@ package expr;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Expr implements Factor
+public class Expr implements Factor, Cloneable
 {
 
     private ArrayList<Term> terms;
@@ -61,5 +61,15 @@ public class Expr implements Factor
             sb.append(index);
         }
         return sb.toString();
+    }
+
+    @Override
+    public Expr clone() throws CloneNotSupportedException {
+        Expr clone = (Expr) super.clone();
+        clone.terms = new ArrayList<>();
+        for (Term term : terms) {
+            clone.terms.add(term.clone());
+        }
+        return clone;
     }
 }

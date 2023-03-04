@@ -56,7 +56,7 @@ public class Lexer {
                     curToken = String.valueOf(c);
                 }
             }
-//            if ("()+-*scxyz".indexOf(c) != -1) {
+            /*if ("()+-*scxyz".indexOf(c) != -1) {
 //                ++ pos;
 //                if (c == '*' && input.charAt(pos) == '*') {
 //                    curToken = "**";
@@ -68,7 +68,7 @@ public class Lexer {
 //            }
 //            else {
 //                System.out.println("cannot identify!");
-//            }
+            }*/
         }
     }
 
@@ -87,13 +87,13 @@ public class Lexer {
         }
         else {
             next();
-//            if (Character.isDigit(c)) {
+            /*if (Character.isDigit(c)) {
 //                curToken = this.getNumber();
 //            }
 //            else {
 //                curToken = String.valueOf(c);
 //                ++ pos;
-//            }
+           }*/
         }
     }
 
