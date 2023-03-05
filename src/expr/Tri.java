@@ -20,7 +20,7 @@ public class Tri {
         this.expr = expression;
     }
 
-    public void setIndex(int c){
+    public void setIndex(int c) {
         this.index = c;
     }
 
@@ -33,6 +33,7 @@ public class Tri {
         if (index == 0) {
             return "1";
         }
+        expr.simplify();
         if (index > 1) {
             return name + "((" + expr.toString() + "))" + "**" + index;
         }

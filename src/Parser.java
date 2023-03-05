@@ -1,4 +1,11 @@
-import expr.*;
+import expr.Expression;
+import expr.Tri;
+import expr.TriFunc;
+import expr.Expr;
+import expr.Var;
+import expr.Variable;
+import expr.Factor;
+import expr.Term;
 import expr.Number;
 
 public class Parser {

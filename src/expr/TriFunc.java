@@ -20,7 +20,7 @@ public class TriFunc implements Factor, Cloneable {
         this.expr = expr;
     }
 
-    public void setIndex(int c){
+    public void setIndex(int c) {
         this.index = c;
     }
 

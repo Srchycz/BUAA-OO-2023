@@ -49,6 +49,10 @@ public class Variable {
         this.sign = sign;
     }
 
+    public int getCount() {
+        return tris.size();
+    }
+
     public void addTri(Tri tri) {
         this.tris.add(tri);
     }
@@ -79,7 +83,13 @@ public class Variable {
     }
 
     public boolean comp(Variable src) {
-        return (src.getXidx() == xidx) & (src.getYidx() == yidx) & (src.getZidx() == zidx);
+        if (!((src.getXidx() == xidx) & (src.getYidx() == yidx) & (src.getZidx() == zidx))) {
+            return false;
+        }
+        if (src.getCount() > 0 || getCount() > 0) {
+            return false;
+        }
+        return true;
     }
 
     public void merge(Variable src) {
@@ -107,54 +117,41 @@ public class Variable {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(sign);
-        sb.append(coe);
-        switch (xidx) {
-            case 0 : { break; }
-            case 1 : {
-                sb.append("*x");
-                break;
-            }
-            case 2 : {
-                sb.append("*x*x");
-                break;
-            }
-            default : {
-                sb.append("*x**").append(xidx);
-            }
+        if (coe.abs().compareTo(BigInteger.ONE) == 0
+                && ((xidx | yidx | zidx) > 0 || !tris.isEmpty())) {
+            sb.append(sign);
         }
-        switch (yidx) {
-            case 0 : { break; }
-            case 1 : {
-                sb.append("*y");
-                break;
-            }
-            case 2 : {
-                sb.append("*y*y");
-                break;
-            }
-            default : {
-                sb.append("*y**").append(yidx);
-            }
+        else {
+            sb.append(sign);
+            sb.append(coe);
         }
-        switch (zidx) {
-            case 0 : { break; }
-            case 1 : {
-                sb.append("*z");
-                break;
-            }
-            case 2 : {
-                sb.append("*z*z");
-                break;
-            }
-            default : {
-                sb.append("*z**").append(zidx);
-            }
-        }
+        sb.append(varToS(xidx, 'x'));
+        sb.append(varToS(yidx, 'y'));
+        sb.append(varToS(zidx, 'z'));
         for (Tri tri : tris) {
             sb.append("*");
             sb.append(tri);
         }
         return sb.toString();
     }
+
+    private String varToS(int c, char x) {
+        StringBuilder sb = new StringBuilder();
+        switch (c) {
+            case 0 : { break; }
+            case 1 : {
+                sb.append("*").append(x);
+                break;
+            }
+            case 2 : {
+                sb.append("*").append(x).append("*").append(x);
+                break;
+            }
+            default : {
+                sb.append("*").append(x).append("**").append(c);
+            }
+        }
+        return sb.toString();
+    }
+
 }
