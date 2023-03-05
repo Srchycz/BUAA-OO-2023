@@ -1,6 +1,7 @@
 package expr;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Variable {
     private BigInteger coe;
@@ -13,12 +14,15 @@ public class Variable {
 
     private String sign;
 
+    private ArrayList<Tri> tris;
+
     public Variable() {
         this.xidx = 0;
         this.yidx = 0;
         this.zidx = 0;
         this.coe = BigInteger.ONE;
         this.sign = "+";
+        this.tris = new ArrayList<>();
     }
 
     public BigInteger getCoe() {
@@ -43,6 +47,10 @@ public class Variable {
 
     public void setSign(String sign) {
         this.sign = sign;
+    }
+
+    public void addTri(Tri tri) {
+        this.tris.add(tri);
     }
 
     public void addIdx(String var, int c) {
@@ -142,6 +150,10 @@ public class Variable {
             default : {
                 sb.append("*z**").append(zidx);
             }
+        }
+        for (Tri tri : tris) {
+            sb.append("*");
+            sb.append(tri);
         }
         return sb.toString();
     }

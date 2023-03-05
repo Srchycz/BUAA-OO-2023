@@ -1,11 +1,5 @@
-import expr.Expr;
-import expr.Term;
+import expr.*;
 import expr.Number;
-import expr.Factor;
-import expr.TriFunc;
-import expr.Var;
-import expr.Expression;
-import expr.Variable;
 
 public class Parser {
     private final Lexer lexer;
@@ -131,15 +125,33 @@ public class Parser {
             variable.addIdx(var, c);
         }
         else {
-            String num = lexer.peek();
-            int c = 1;
-            lexer.next();
-            if (lexer.peek().equals("**")) {
-                lexer.nextNumber();
-                c = Integer.parseInt(lexer.peek());
+            if (lexer.peek().equals("sin") || lexer.peek().equals("cos")) {
+                Tri tri = new Tri(lexer.peek());
                 lexer.next();
+                lexer.next();
+                tri.setExpression(parseExpression());
+                lexer.next();
+                lexer.next();
+                int c = 1;
+                if (lexer.peek().equals("**")) {
+                    lexer.nextNumber();
+                    c = Integer.parseInt(lexer.peek());
+                    lexer.next();
+                }
+                tri.setIndex(c);
+                variable.addTri(tri);
             }
-            variable.mulCoe(num, c);
+            else {
+                String num = lexer.peek();
+                int c = 1;
+                lexer.next();
+                if (lexer.peek().equals("**")) {
+                    lexer.nextNumber();
+                    c = Integer.parseInt(lexer.peek());
+                    lexer.next();
+                }
+                variable.mulCoe(num, c);
+            }
         }
     }
 }
