@@ -2,6 +2,7 @@ package expr;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Variable {
     private BigInteger coe;
@@ -53,6 +54,10 @@ public class Variable {
         return tris.size();
     }
 
+    public ArrayList<Tri> getTris() {
+        return tris;
+    }
+
     public void addTri(Tri tri) {
         this.tris.add(tri);
     }
@@ -86,8 +91,30 @@ public class Variable {
         if (!((src.getXidx() == xidx) & (src.getYidx() == yidx) & (src.getZidx() == zidx))) {
             return false;
         }
-        if (src.getCount() > 0 || getCount() > 0) {
+        if (src.getCount() > 0 != getCount() > 0) {
             return false;
+        }
+        if (src.getCount() == getCount()) {
+            HashMap<Tri, Boolean> vis = new HashMap<>();
+            ArrayList<Tri> t = src.getTris();
+            for (Tri tri : tris) {
+                int flag = 0;
+                for (Tri tri1 : t) {
+                    if (tri.getName().equals(tri1.getName())) {
+                        if (vis.containsKey(tri1)) {
+                            continue;
+                        }
+                        if (tri.getExpression().comp(tri1.getExpression())) {
+                            flag = 1;
+                            vis.put(tri1, true);
+                            break;
+                        }
+                    }
+                }
+                if (flag == 0) {
+                    return false;
+                }
+            }
         }
         return true;
     }

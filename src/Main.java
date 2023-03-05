@@ -20,7 +20,8 @@ public class Main {
         Parser parser1 = new Parser(lexer1);
         Expression expression = parser1.parseExpression();
         expression.simplify();
-        System.out.println(expression.toString().replaceAll("\\+\\*","\\+").replaceAll("-\\*","-"));
+        System.out.println(simplifySign(expression.toString().
+                replaceAll("\\+\\*","\\+").replaceAll("-\\*","-")));
     }
 
     public static String simplifySign(String input) {

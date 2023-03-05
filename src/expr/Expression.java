@@ -3,12 +3,16 @@ package expr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class Expression {
     private ArrayList<Variable> variables;
 
+    private boolean isSimple;
+
     public Expression() {
+        this.isSimple = false;
         this.variables = new ArrayList<>();
     }
 
@@ -16,32 +20,43 @@ public class Expression {
         this.variables.add(variable);
     }
 
-    public int getCount() {
-        return variables.size();
+    public ArrayList<Variable> getVariables() {
+        return variables;
     }
 
-    public boolean findV(Variable src) {
-        for (Variable variable : variables) {
-            if (src.comp(variable)) {
-                return true;
-            }
-        }
-        return false;
+    public int getCount() {
+        return variables.size();
     }
 
     public boolean comp(Expression src) {
         if (getCount() != src.getCount()) {
             return false;
         }
+        ArrayList<Variable> variables1 = src.getVariables();
+        HashMap<Variable, Boolean> vis = new HashMap<>();
         for (Variable variable : variables) {
-            if (src.findV(variable)) {
-                return true;
+            int flag = 0;
+            for (Variable variable1 : variables1) {
+                if (vis.containsKey(variable1)) {
+                    continue;
+                }
+                if (variable.comp(variable1)) {
+                    flag = 1;
+                    vis.put(variable1, true);
+                    break;
+                }
+            }
+            if (flag == 0) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public void simplify() {
+        if (isSimple) {
+            return;
+        }
         Collections.sort(variables, new Comparator<Variable>() {
             @Override
             public int compare(Variable o1, Variable o2) {
@@ -69,6 +84,7 @@ public class Expression {
                 now = nxt;
             }
         }
+        isSimple = true;
     }
 
     @Override

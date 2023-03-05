@@ -13,6 +13,7 @@ public class Tri {
     }
 
     public Expression getExpression() {
+        expr.simplify();
         return expr;
     }
 
@@ -26,6 +27,10 @@ public class Tri {
 
     public int getIndex() {
         return this.index;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
