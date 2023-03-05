@@ -104,6 +104,9 @@ public class Variable {
                         if (vis.containsKey(tri1)) {
                             continue;
                         }
+                        if (tri.getIndex() != tri1.getIndex()) {
+                            continue;
+                        }
                         if (tri.getExpression().comp(tri1.getExpression())) {
                             flag = 1;
                             vis.put(tri1, true);
