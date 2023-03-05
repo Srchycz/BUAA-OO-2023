@@ -91,7 +91,7 @@ public class Variable {
         if (!((src.getXidx() == xidx) & (src.getYidx() == yidx) & (src.getZidx() == zidx))) {
             return false;
         }
-        if (src.getCount() > 0 != getCount() > 0) {
+        if (src.getCount() != getCount()) {
             return false;
         }
         if (src.getCount() == getCount()) {
