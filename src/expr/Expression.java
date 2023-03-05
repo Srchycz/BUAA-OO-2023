@@ -31,8 +31,6 @@ public class Expression {
     public boolean comp(Expression src) {
         simplify();
         src.simplify();
-        System.out.println(getCount());
-        System.out.println(src.getCount());
         if (getCount() != src.getCount()) {
             return false;
         }
