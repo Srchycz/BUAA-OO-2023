@@ -42,7 +42,7 @@ public class Expression {
                 if (vis.containsKey(variable1)) {
                     continue;
                 }
-                if (variable.comp(variable1)) {
+                if (variable.equals(variable1)) {
                     flag = 1;
                     vis.put(variable1, true);
                     break;

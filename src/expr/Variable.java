@@ -87,6 +87,20 @@ public class Variable {
         }
     }
 
+    public boolean equals(Variable src) {
+        if (src.getSign().equals(getSign())) {
+            if (coe.compareTo(src.getCoe()) != 0) {
+                return false;
+            }
+        }
+        else {
+            if (coe.add(src.getCoe()).compareTo(BigInteger.ZERO) != 0) {
+                return false;
+            }
+        }
+        return comp(src);
+    }
+
     public boolean comp(Variable src) {
         if (!((src.getXidx() == xidx) & (src.getYidx() == yidx) & (src.getZidx() == zidx))) {
             return false;
