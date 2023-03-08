@@ -75,6 +75,7 @@ public class Term implements Cloneable {
                     --idx;
                     //Expr facCopy = new Expr(fac);
                     Expr facCopy = fac.clone();
+                    facCopy.setIndex(1);
                     this.addFactor(facCopy);
                 }
             }
