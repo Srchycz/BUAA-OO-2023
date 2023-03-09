@@ -104,13 +104,23 @@ public class Term implements Cloneable {
                 Term temp = new Term(this);
                 temp.mergeTerm(iter.next());
                 temp.removeFactor(factor);
-                sb.append(temp);
+                Term termcopy;
+                try {
+                    termcopy = temp.clone();
+                } catch (CloneNotSupportedException e) { throw new RuntimeException(e); }
+                sb.append(termcopy);
                 while (iter.hasNext()) {
                     //sb.append(" + ");
                     Term a = new Term(this);
                     a.mergeTerm(iter.next());
                     a.removeFactor(factor);
-                    sb.append(a);
+                    Term acopy;
+                    try {
+                        acopy = a.clone();
+                    } catch (CloneNotSupportedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    sb.append(acopy);
                 }
                 return sb.toString();
             }
