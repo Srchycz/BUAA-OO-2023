@@ -26,10 +26,6 @@ public class Number implements Factor, Cloneable {
         return index;
     }
 
-    public Number deriv(){
-        return new Number(BigInteger.ZERO);
-    }
-
     @Override
     public String toString() {
         if (index == 0) {
