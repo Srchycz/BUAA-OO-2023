@@ -50,7 +50,7 @@ public class InputHandler {
                 sb.append("(");
                 sb.append(Derive(s.substring(i + 3, f), s.charAt(i + 1)));
                 sb.append(")");
-                sb.append(s.substring(f));
+                sb.append(s.substring(f + 1));
                 break;
             }
         }
@@ -159,6 +159,6 @@ public class InputHandler {
         Parser parser1 = new Parser(lexer1);
         Expression expression = parser1.parseExpression();
         expression = expression.derive(String.valueOf(var));
-        return expression.toString().replaceAll("\\+\\*","\\+").replaceAll("-\\*","-");
+        return expression.toString().replaceAll("\\+\\*","+").replaceAll("-\\*","-");
     }
 }

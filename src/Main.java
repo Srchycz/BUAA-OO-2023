@@ -18,7 +18,8 @@ public class Main {
         Expression expression = parser1.parseExpression();
         expression.simplify();
         System.out.println(simplifySign(expression.toString().
-                replaceAll("\\+\\*","\\+").replaceAll("-\\*","-")));
+                replaceAll("\\+\\*","+").
+                replaceAll("-\\*","-").replaceAll("\\(\\+", "(")));
     }
 
     public static String simplifySign(String input) {
