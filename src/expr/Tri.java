@@ -1,6 +1,6 @@
 package expr;
 
-public class Tri implements Cloneable{
+public class Tri implements Cloneable {
     private int index;
 
     private final String name;

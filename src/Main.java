@@ -9,7 +9,9 @@ public class Main {
         InputHandler inputHandler = new InputHandler(scanner);
         inputHandler.input();
 
-        Lexer lexer = new Lexer(simplifySign(inputHandler.getString()));
+        Lexer lexer = new Lexer(simplifySign(inputHandler.getString()).
+                replaceAll("\\*-sin", "*-1*sin").
+                replaceAll("\\*-cos", "*-1*cos"));
         Parser parser = new Parser(lexer);
         Expr expr = parser.parseExpr();
 

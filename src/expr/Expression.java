@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class Expression implements Cloneable{
+public class Expression implements Cloneable {
     private ArrayList<Variable> variables;
 
     private boolean isSimple;
