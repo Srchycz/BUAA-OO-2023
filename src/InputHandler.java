@@ -1,7 +1,16 @@
+import expr.Expr;
+import expr.Expression;
+
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InputHandler {
+
+    private static final String REGEX = "(.*)=(.*)";
+
+    private static final Pattern p = Pattern.compile(REGEX);
     private final Scanner scanner;
 
     private ArrayList<SelfFunction> selfFunctions;
@@ -13,17 +22,64 @@ public class InputHandler {
         this.selfFunctions = new ArrayList<>();
     }
 
-    public void input() {
+    public String getString() {
+        return this.string;
+    }
+
+    private String simderiv(String s) throws CloneNotSupportedException {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); ++ i) {
+            if (s.charAt(i) != 'd') {
+                sb.append(s.charAt(i));
+            }
+            else {
+                int cnt = 1;
+                int f = 0;
+                for (int j = i + 3; j < s.length(); ++ j) {
+                    if (s.charAt(j) == '(') {
+                        ++ cnt;
+                    }
+                    if (s.charAt(j) == ')') {
+                        -- cnt;
+                    }
+                    if (cnt == 0) {
+                        f = j;
+                        break;
+                    }
+                }
+                sb.append("(");
+                sb.append(Derive(s.substring(i + 3, f), s.charAt(i + 1)));
+                sb.append(")");
+                sb.append(s.substring(f));
+                break;
+            }
+        }
+        return sb.toString();
+    }
+
+    public void input() throws CloneNotSupportedException {
         int n = scanner.nextInt();
         scanner.nextLine(); //读去换行符
-        for (int i = 0; i < n; ++ i) {
-            SelfFunction function = new SelfFunction(scanner.nextLine().replaceAll("\\s", ""));
+        if (n > 0) {
+            String s = Main.simplifySign(scanner.nextLine().replaceAll("\\s",""));
+            Matcher m = p.matcher(s);
+            m.find();
+            SelfFunction function = new SelfFunction(m.group(1) + "=" + simderiv(m.group(2)));
+            selfFunctions.add(function);
+        }
+        for (int i = 1; i < n; ++ i) {
+            String string = scanner.nextLine().replaceAll("\\s","");
+            Matcher matcher = p.matcher(string);
+            matcher.find();
+            SelfFunction function = new SelfFunction(matcher.group(1)
+                    + "=" + simderiv(Main.simplifySign(simplify(matcher.group(2)))));
             selfFunctions.add(function);
         }
         string = scanner.nextLine().replaceAll("\\s", "");
+        string = simderiv(Main.simplifySign(simplify(string)));
     }
 
-    public String simplify() {
+    public String simplify(String string) {
         StringBuilder sb = new StringBuilder();
         int pos = 0;
         int len = string.length();
@@ -93,5 +149,16 @@ public class InputHandler {
             }
         }
         return "";
+    }
+
+    public String Derive(String string, char var) throws CloneNotSupportedException {
+        Lexer lexer = new Lexer(string);
+        Parser parser = new Parser(lexer);
+        Expr expr = parser.parseExpr();
+        Lexer lexer1 = new Lexer(Main.simplifySign(expr.toString().replaceAll("\\s","")));
+        Parser parser1 = new Parser(lexer1);
+        Expression expression = parser1.parseExpression();
+        expression = expression.derive(String.valueOf(var));
+        return expression.toString().replaceAll("\\+\\*","\\+").replaceAll("-\\*","-");
     }
 }

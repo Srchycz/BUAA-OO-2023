@@ -6,33 +6,19 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws CloneNotSupportedException {
         Scanner scanner = new Scanner(System.in);
-        Lexer lexer = new Lexer(simplifySign(scanner.nextLine().replaceAll("\\s","")));
+        InputHandler inputHandler = new InputHandler(scanner);
+        inputHandler.input();
+
+        Lexer lexer = new Lexer(simplifySign(inputHandler.getString()));
         Parser parser = new Parser(lexer);
         Expr expr = parser.parseExpr();
+
         Lexer lexer1 = new Lexer(simplifySign(expr.toString().replaceAll("\\s","")));
         Parser parser1 = new Parser(lexer1);
         Expression expression = parser1.parseExpression();
-        expression = expression.derive(scanner.next());
-        System.out.println(expression.toString().
-                replaceAll("\\+\\*","\\+").replaceAll("-\\*","-"));
-
-
-//        InputHandler inputHandler = new InputHandler(scanner);
-
-//        inputHandler.input();
-        //System.out.println(inputHandler.simplify());
-
-//        Lexer lexer = new Lexer(simplifySign(inputHandler.simplify()));
-//        Parser parser = new Parser(lexer);
-//        Expr expr = parser.parseExpr();
-//        //System.out.println(simplifySign(expr.toString()));
-//
-//        Lexer lexer1 = new Lexer(simplifySign(expr.toString().replaceAll("\\s","")));
-//        Parser parser1 = new Parser(lexer1);
-//        Expression expression = parser1.parseExpression();
-//        expression.simplify();
-//        System.out.println(simplifySign(expression.toString().
-//                replaceAll("\\+\\*","\\+").replaceAll("-\\*","-")));
+        expression.simplify();
+        System.out.println(simplifySign(expression.toString().
+                replaceAll("\\+\\*","\\+").replaceAll("-\\*","-")));
     }
 
     public static String simplifySign(String input) {
