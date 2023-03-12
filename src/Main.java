@@ -11,7 +11,9 @@ public class Main {
 
         Lexer lexer = new Lexer(simplifySign(inputHandler.getString()).
                 replaceAll("\\*-sin", "*-1*sin").
-                replaceAll("\\*-cos", "*-1*cos"));
+                replaceAll("\\*-cos", "*-1*cos").
+                replaceAll("\\*\\+cos", "*cos").
+                replaceAll("\\*\\+sin", "*sin"));
         Parser parser = new Parser(lexer);
         Expr expr = parser.parseExpr();
 
@@ -58,5 +60,3 @@ public class Main {
         return sb.toString();
     }
 }
-//0
-//-1*2*sin((+y))**2-2*sin((+x))**2*1+2*sin((+x))**2*2*sin((+y))**2

@@ -50,8 +50,7 @@ public class InputHandler {
                 sb.append("(");
                 sb.append(Derive(s.substring(i + 3, f), s.charAt(i + 1)));
                 sb.append(")");
-                sb.append(s.substring(f + 1));
-                break;
+                i = f;
             }
         }
         return sb.toString();

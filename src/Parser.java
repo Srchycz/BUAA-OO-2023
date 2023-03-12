@@ -81,7 +81,14 @@ public class Parser {
                     return triFunc;
                 }
                 else {
-                    Number number = new Number(lexer.peek());
+                    Number number = null;
+                    try {
+                        number = new Number(lexer.peek());
+                    } catch (NumberFormatException e) {
+                        System.out.println("NumberFormatError:" + lexer.getPos());
+                        System.out.println(lexer.getErr());
+                        System.exit(0);
+                    }
                     lexer.next();
                     if (lexer.peek().equals("**")) {
                         lexer.nextNumber();

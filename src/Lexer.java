@@ -8,6 +8,7 @@ public class Lexer {
     public Lexer(String input) {
         this.input = input;
         this.next();
+        //System.out.println(input);
     }
 
     private String getNumber() {
@@ -99,5 +100,13 @@ public class Lexer {
 
     public String peek() {
         return this.curToken;
+    }
+
+    public String getErr() {
+        return input.substring(pos - 2, pos + 3);
+    }
+
+    public int getPos() {
+        return this.pos;
     }
 }

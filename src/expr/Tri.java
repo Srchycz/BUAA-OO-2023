@@ -58,12 +58,24 @@ public class Tri implements Cloneable {
         return v;
     }
 
+    public boolean isZero() {
+        return expr.isZero() && name.equals("sin");
+    }
+
     @Override
     public String toString() {
         if (index == 0) {
             return "1";
         }
         expr.simplify();
+        if (expr.isZero()) {
+            if (name.equals("sin")) {
+                return "0";
+            }
+            else {
+                return "1";
+            }
+        }
         if (index > 1) {
             return name + "((" + expr.toString() + "))" + "**" + index;
         }

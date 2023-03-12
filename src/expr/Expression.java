@@ -32,6 +32,14 @@ public class Expression implements Cloneable {
         return variables.size();
     }
 
+    public boolean isZero() {
+        boolean k = true;
+        for (Variable v: variables) {
+            k &= v.isZero();
+        }
+        return k;
+    }
+
     public boolean comp(Expression src) {
         simplify();
         src.simplify();

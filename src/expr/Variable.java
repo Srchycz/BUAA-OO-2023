@@ -83,6 +83,23 @@ public class Variable implements Cloneable {
 
     public void addExpression(Expression expression) { this.expressions.add(expression); }
 
+    public boolean isZero() {
+        if (coe.compareTo(BigInteger.ZERO) == 0) {
+            return true;
+        }
+        boolean k = true;
+        if ((xidx | yidx | zidx) > 0) {
+            return false;
+        }
+        if (!expressions.isEmpty()) {
+            return false;
+        }
+        for (Tri t: tris) {
+            k &= t.isZero();
+        }
+        return k && !tris.isEmpty();
+    }
+
     public void addIdx(String var, int c) {
         switch (var) {
             case "x": {
@@ -211,7 +228,12 @@ public class Variable implements Cloneable {
         StringBuilder sb = new StringBuilder();
         if (coe.abs().compareTo(BigInteger.ONE) == 0
                 && ((xidx | yidx | zidx) > 0 || !tris.isEmpty())) {
-            sb.append(sign);
+            if (coe.compareTo(BigInteger.ZERO) > 0) {
+                sb.append(sign);
+            }
+            else {
+                sb.append(sign.equals("+") ? "-" : "+");
+            }
         }
         else {
             sb.append(sign);
@@ -226,7 +248,9 @@ public class Variable implements Cloneable {
         }
         for (Expression expression: expressions) {
             sb.append("*");
+            sb.append("(");
             sb.append(expression);
+            sb.append(")");
         }
         return sb.toString();
     }
@@ -305,5 +329,4 @@ public class Variable implements Cloneable {
         }
         return clone;
     }
-
 }

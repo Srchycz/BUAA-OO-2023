@@ -14,7 +14,11 @@ public class Number implements Factor, Cloneable {
     }
 
     public Number(String val) {
-        this.num = new BigInteger(val);
+        try {
+            this.num = new BigInteger(val);
+        } catch (NumberFormatException e) {
+            throw e;
+        }
         this.index = 1;
     }
 
