@@ -53,7 +53,7 @@ public class Elevator {
     }
 
     public void close() {
-        TimableOutput.println(String.format("Close-%d-%d", floor, id));
+        TimableOutput.println(String.format("CLOSE-%d-%d", floor, id));
     }
 
     public int numOfOut() {
