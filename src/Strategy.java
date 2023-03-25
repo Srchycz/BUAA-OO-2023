@@ -15,12 +15,13 @@ public class Strategy {
                 return Direction.STAY;
             }
             else {
-                if (request.getDestination() > elevator.getFloor()) {
+                if (request.getStart() > elevator.getFloor()) {
                     return Direction.UP;
                 }
-                else {
+                else if (request.getStart() < elevator.getFloor()){
                     return Direction.DOWN;
                 }
+                else return Direction.STAY;
             }
         }
         else {

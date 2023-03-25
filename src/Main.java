@@ -12,3 +12,8 @@ public class Main {
         inputThread.start();
     }
 }
+/*
+1-FROM-2-TO-8
+2-FROM-11-TO-3
+3-FROM-3-TO-8
+ */

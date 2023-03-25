@@ -28,12 +28,12 @@ public class ElevatorThread extends Thread {
             Direction d = strategy.getSuggestion();
             switch (d) {
                 case UP: {
-                    elevator.up();
                     try {
                         sleep(400);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+                    elevator.up();
                     break;
                 }
                 case DOWN: {
