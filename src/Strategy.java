@@ -18,10 +18,10 @@ public class Strategy {
                 if (request.getStart() > elevator.getFloor()) {
                     return Direction.UP;
                 }
-                else if (request.getStart() < elevator.getFloor()){
+                else if (request.getStart() < elevator.getFloor()) {
                     return Direction.DOWN;
                 }
-                else return Direction.STAY;
+                else { return Direction.STAY; }
             }
         }
         else {
