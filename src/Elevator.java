@@ -8,6 +8,8 @@ public class Elevator {
     private static final int MinFloor = 1;
     private final int id;
 
+    private long lastTime;
+
     private int floor;
 
     private final ArrayList<Request> requests;
@@ -30,6 +32,10 @@ public class Elevator {
         return floor;
     }
 
+    public long getLastTime() {
+        return lastTime;
+    }
+
     public void up() {
         if (floor == MaxFloor) {
             System.out.println("OUT OF CEIL!");
@@ -37,6 +43,7 @@ public class Elevator {
         }
         ++ floor;
         TimableOutput.println(String.format("ARRIVE-%d-%d", floor, id));
+        lastTime = System.currentTimeMillis();
     }
 
     public void down() {
@@ -46,6 +53,7 @@ public class Elevator {
         }
         -- floor;
         TimableOutput.println(String.format("ARRIVE-%d-%d", floor, id));
+        lastTime = System.currentTimeMillis();
     }
 
     public void open() {
@@ -54,6 +62,7 @@ public class Elevator {
 
     public void close() {
         TimableOutput.println(String.format("CLOSE-%d-%d", floor, id));
+        lastTime = System.currentTimeMillis();
     }
 
     public int numOfOut() {

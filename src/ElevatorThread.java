@@ -26,10 +26,11 @@ public class ElevatorThread extends Thread {
                 checkPickup();
             }
             Direction d = strategy.getSuggestion();
+            long currentTime = System.currentTimeMillis();
             switch (d) {
                 case UP: {
                     try {
-                        sleep(400);
+                        sleep(Math.max(400 - currentTime + elevator.getLastTime(), 0));
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -38,7 +39,7 @@ public class ElevatorThread extends Thread {
                 }
                 case DOWN: {
                     try {
-                        sleep(400);
+                        sleep(Math.max(400 - currentTime + elevator.getLastTime(), 0));
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
