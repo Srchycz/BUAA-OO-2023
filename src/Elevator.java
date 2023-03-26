@@ -18,6 +18,7 @@ public class Elevator {
         this.id = id;
         this.floor = 1;
         this.requests = new ArrayList<>();
+        this.lastTime = System.currentTimeMillis();
     }
 
     public int getId() {
