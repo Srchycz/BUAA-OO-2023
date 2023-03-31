@@ -24,7 +24,7 @@ public class Elevator {
         this.requests = new ArrayList<>();
         this.lastTime = System.currentTimeMillis();
         this.capacity = capacity;
-        this.moveTime = (long)(speed * 100);
+        this.moveTime = (long)(speed * 1000);
     }
 
     public Elevator(int id) {
