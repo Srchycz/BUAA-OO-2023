@@ -18,13 +18,22 @@ public class Elevator {
 
     private final ArrayList<Request> requests;
 
-    public Elevator(int id, int capacity, double speed) {
+    public Elevator(int id, int capacity, double speed, int floor) {
         this.id = id;
-        this.floor = 1;
+        this.floor = floor;
         this.requests = new ArrayList<>();
         this.lastTime = System.currentTimeMillis();
         this.capacity = capacity;
         this.moveTime = (long)(speed * 100);
+    }
+
+    public Elevator(int id) {
+        this.id = id;
+        this.floor = 1;
+        this.requests = new ArrayList<>();
+        this.lastTime = System.currentTimeMillis();
+        this.capacity = 6;
+        this.moveTime = 400;
     }
 
     public int getId() {

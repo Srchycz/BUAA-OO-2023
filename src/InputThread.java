@@ -37,7 +37,8 @@ public class InputThread extends Thread {
                     ElevatorRequest elevatorRequest = (ElevatorRequest) request;
                     ElevatorThread elevatorThread = new ElevatorThread(
                             elevatorRequest.getElevatorId(), requestQueue,
-                            elevatorRequest.getCapacity(), elevatorRequest.getSpeed());
+                            elevatorRequest.getCapacity(), elevatorRequest.getSpeed(),
+                            elevatorRequest.getFloor());
                     elevatorThread.start();
                 } else if (request instanceof MaintainRequest) {
                     MaintainRequest maintainRequest = (MaintainRequest) request;

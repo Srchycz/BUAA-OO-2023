@@ -8,7 +8,7 @@ public class Main {
         RequestQueue requestQueue = new RequestQueue();
         ArrayList<ElevatorThread> elevatorThreads = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
-            ElevatorThread elevatorThread = new ElevatorThread(i, requestQueue, 6, 0.4);
+            ElevatorThread elevatorThread = new ElevatorThread(i, requestQueue);
             elevatorThreads.add(elevatorThread);
             elevatorThread.start();
         }

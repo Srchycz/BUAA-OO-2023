@@ -9,8 +9,15 @@ public class ElevatorThread extends Thread {
 
     private boolean toMaintain;
 
-    public ElevatorThread(int id, RequestQueue waitqueue, int capacity, double speed) {
-        this.elevator = new Elevator(id, capacity, speed);
+    public ElevatorThread(int id, RequestQueue waitqueue, int capacity, double speed, int floor) {
+        this.elevator = new Elevator(id, capacity, speed, floor);
+        this.waitqueue = waitqueue;
+        this.strategy = new Strategy(elevator, waitqueue);
+        this.toMaintain = false;
+    }
+
+    public ElevatorThread(int id, RequestQueue waitqueue) {
+        this.elevator = new Elevator(id);
         this.waitqueue = waitqueue;
         this.strategy = new Strategy(elevator, waitqueue);
         this.toMaintain = false;
