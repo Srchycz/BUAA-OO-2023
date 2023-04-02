@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ElevatorThread extends Thread {
     private final Elevator elevator;
@@ -7,24 +8,24 @@ public class ElevatorThread extends Thread {
 
     private final Strategy strategy;
 
-    private boolean toMaintain;
+    private AtomicBoolean toMaintain;
 
     public ElevatorThread(int id, RequestQueue waitqueue, int capacity, double speed, int floor) {
         this.elevator = new Elevator(id, capacity, speed, floor);
         this.waitqueue = waitqueue;
         this.strategy = new Strategy(elevator, waitqueue);
-        this.toMaintain = false;
+        toMaintain = new AtomicBoolean(false);
     }
 
     public ElevatorThread(int id, RequestQueue waitqueue) {
         this.elevator = new Elevator(id);
         this.waitqueue = waitqueue;
         this.strategy = new Strategy(elevator, waitqueue);
-        this.toMaintain = false;
+        toMaintain = new AtomicBoolean(false);
     }
 
     public void setMaintain() {
-        this.toMaintain = true;
+        toMaintain.set(true);
     }
 
     public int getElevatorId() {
@@ -34,7 +35,7 @@ public class ElevatorThread extends Thread {
     @Override
     public void run() {
         while (true) {
-            if (toMaintain) {
+            if (toMaintain.get()) {
                 Maintain();
                 break;
             }
