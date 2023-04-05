@@ -39,7 +39,7 @@ public class ElevatorThread extends Thread {
                 Maintain();
                 break;
             }
-            if (waitqueue.isEnd() && elevator.getNum() == 0 && waitqueue.isEmpty()) {
+            if (waitqueue.isFinish() && elevator.getNum() == 0 && waitqueue.isEmpty()) {
                 break;
             }
             if (elevator.numOfOut() > 0) {
@@ -83,6 +83,7 @@ public class ElevatorThread extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        waitqueue.subCnt(elevator.numOfOut());
         elevator.getoff();
         while (elevator.getNum() < elevator.getCapacity()) {
             Request request = waitqueue.getRequest(elevator.getFloor(), elevator.getDirection());
@@ -135,10 +136,12 @@ public class ElevatorThread extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            waitqueue.subCnt(elevator.numOfOut());
             ArrayList<Request> requests = elevator.clean();
             for (Request request : requests) {
                 waitqueue.addRequest(request);
             }
+            waitqueue.subCnt(requests.size());
             try {
                 sleep(200);
             } catch (InterruptedException e) {

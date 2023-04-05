@@ -5,13 +5,23 @@ public class RequestQueue {
     private boolean isEnd;
     private final ArrayList<Request> requests;
 
+    private int cnt;
+
     public RequestQueue() {
         requests = new ArrayList<>();
         this.isEnd = false;
+        this.cnt = 0;
     }
 
     public synchronized void addRequest(Request request) {
         requests.add(request);
+        ++cnt;
+        notifyAll();
+    }
+
+    public synchronized void subCnt(int t) {
+        cnt = cnt - t;
+        assert (cnt >= 0);
         notifyAll();
     }
 
@@ -25,6 +35,8 @@ public class RequestQueue {
         this.isEnd = true;
         notifyAll();
     }
+
+    public synchronized boolean isFinish() { return isEnd & (cnt == 0); }
 
     public synchronized Request getRequest(int floor, Direction direction) { // judge pick up
         int idx = -1;
@@ -59,7 +71,7 @@ public class RequestQueue {
     }
 
     public synchronized Request getTop() {
-        while (requests.isEmpty() && !isEnd) {
+        while (requests.isEmpty() && !isFinish()) {
             try {
                 wait();
             } catch (InterruptedException e) {
