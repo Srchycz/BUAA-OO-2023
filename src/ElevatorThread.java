@@ -102,6 +102,7 @@ public class ElevatorThread extends Thread {
     }
 
     private void exchange() {
+        controller.serve(elevator.getFloor());
         elevator.open();
         try {
             sleep(200);
@@ -130,6 +131,7 @@ public class ElevatorThread extends Thread {
             throw new RuntimeException(e);
         }
         elevator.close();
+        controller.serveRelease(elevator.getFloor());
     }
 
     private void checkPickup() {
@@ -142,6 +144,7 @@ public class ElevatorThread extends Thread {
             pickRequest.add(request);
         }
         if (!pickRequest.isEmpty()) {
+            controller.onlyPick(elevator.getFloor());
             elevator.open();
             try {
                 sleep(200);
@@ -157,6 +160,7 @@ public class ElevatorThread extends Thread {
                 throw new RuntimeException(e);
             }
             elevator.close();
+            controller.onlyPickRelease(elevator.getFloor());
         }
     }
 
@@ -165,6 +169,7 @@ public class ElevatorThread extends Thread {
             requestQueue.addRequest(request);
         }
         if (elevator.getNum() > 0) {
+            controller.serve(elevator.getFloor());
             elevator.open();
             try {
                 sleep(200);
@@ -185,6 +190,7 @@ public class ElevatorThread extends Thread {
                 throw new RuntimeException(e);
             }
             elevator.close();
+            controller.serveRelease(elevator.getFloor());
         }
         elevator.Maintain();
     }
