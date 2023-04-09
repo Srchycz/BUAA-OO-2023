@@ -49,13 +49,13 @@ public class Planner {
     public synchronized Plan getPlan(Request request) {
         int s = request.getStart();
         int t = request.getDestination();
-        Plan plan = new Plan(request);
         LinkedList<Integer> list = new LinkedList<>();
         if (!isUpdate) {
             Floyd();
         }
         getPass(s, t, list);
         list.addLast(t);
+        Plan plan = new Plan(request);
         plan.setList(list);
         return plan;
     }
