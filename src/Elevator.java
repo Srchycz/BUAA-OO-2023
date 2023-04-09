@@ -177,6 +177,10 @@ public class Elevator {
         return ((access >> (floor - 1)) & 1) == 1;
     }
 
+    public int getAccess() {
+        return access;
+    }
+
     public void Print() {
         System.out.println("id :" + id + " access : " + access + " movetime: " + moveTime);
     }

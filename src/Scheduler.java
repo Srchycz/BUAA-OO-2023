@@ -46,7 +46,7 @@ public class Scheduler extends Thread {
     public void assignRequest(Request request) {
         int s = request.getStart();
         int t = request.getNext();
-        int num = 100;
+        int num = 1000;
         ElevatorThread aim = null;
         synchronized (elevatorThreadArrayList) {
             for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
@@ -72,9 +72,12 @@ public class Scheduler extends Thread {
         request.setPlan(plan);
         //plan.Print();
         t = request.getNext();
+        num = 1000;
         synchronized (elevatorThreadArrayList) {
             for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
                 if (elevatorThread.isAccess(s) && elevatorThread.isAccess(t)) {
+                    //System.out.println("check" + elevatorThread.getElevatorId());
+                    //System.out.println("num:" + num + " e-num: " + elevatorThread.getNum());
                     if (elevatorThread.getNum() == 0) {
                         elevatorThread.getWaitqueue().addRequest(request);
                         return;
@@ -90,7 +93,9 @@ public class Scheduler extends Thread {
             aim.getWaitqueue().addRequest(request);
             return;
         }
-        System.out.println("Fail in distribute request!");
+        //planner.Print();
+        System.out.println("Fail in distribute request!" + " s: " +
+                s + " t: " + t + " num: " + num);
         System.exit(0);
         //assignRequest(request);
     }
