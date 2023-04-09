@@ -70,8 +70,8 @@ public class Controller {
     }
 
     public void onlyPickRelease(int floor) {
-            onlyPick[floor].release();
-            serve[floor].release();
+        onlyPick[floor].release();
+        serve[floor].release();
     }
 
     public void serve(int floor) {
