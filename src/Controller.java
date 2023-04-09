@@ -31,4 +31,9 @@ public class Controller {
         assert (expectNum >= finishNum);
         return (expectNum == finishNum) && inputEnd;
     }
+
+    public void Print() {
+        System.out.println("ExpectNum : " + expectNum +
+                "  FinishNum : " + finishNum + " isInputEnd : " + inputEnd);
+    }
 }

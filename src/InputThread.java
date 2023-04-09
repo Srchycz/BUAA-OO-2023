@@ -34,6 +34,7 @@ public class InputThread extends Thread {
             if (request == null) {
                 controller.setInputEnd();
                 requestQueue.setEnd();
+                //System.out.println("input end");
                 break;
             } else {
                 if (request instanceof PersonRequest) {
@@ -42,6 +43,7 @@ public class InputThread extends Thread {
                             personRequest.getFromFloor(), personRequest.getToFloor());
                     controller.addExpectNum();
                     requestQueue.addRequest(r);
+                    System.out.println(requestQueue.isEmpty());
                 } else if (request instanceof ElevatorRequest) {
                     ElevatorRequest elevatorRequest = (ElevatorRequest) request;
                     ElevatorThread elevatorThread = new ElevatorThread(
@@ -59,9 +61,11 @@ public class InputThread extends Thread {
                         Iterator<ElevatorThread> iter = elevatorThreads.iterator();
                         while (iter.hasNext()) {
                             ElevatorThread elevatorThread = iter.next();
+                            //System.out.println(elevatorThread.getElevatorId());
                             if (elevatorThread.getElevatorId() == maintainRequest.getElevatorId()) {
                                 planner.sub(elevatorThread.getElevator());
                                 elevatorThread.setMaintain();
+                                elevatorThread.getWaitqueue().setEnd();
                                 iter.remove();
                                 break;
                             }

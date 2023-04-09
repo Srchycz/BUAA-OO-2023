@@ -26,6 +26,10 @@ public class PreQueue {
         notifyAll();
     }
 
+    public synchronized int getNum() {
+        return requests.size();
+    }
+
     public synchronized Request getRequest(int floor, Direction direction) { // judge pick up
         int idx = -1;
         for (int i = 0; i < requests.size(); ++ i) {

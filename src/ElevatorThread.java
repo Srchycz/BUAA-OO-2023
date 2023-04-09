@@ -10,9 +10,9 @@ public class ElevatorThread extends Thread {
 
     private final Strategy strategy;
 
-    private AtomicBoolean toMaintain;
+    private final AtomicBoolean toMaintain;
 
-    private Controller controller;
+    private final Controller controller;
 
     public ElevatorThread(int id, int capacity, double speed, int floor, int access,
                           Controller controller, RequestQueue requestQueue) {
@@ -51,6 +51,11 @@ public class ElevatorThread extends Thread {
         return this.elevator;
     }
 
+
+    public int getNum() {
+        return waitqueue.getNum();
+    }
+
     @Override
     public void run() {
         while (true) {
@@ -59,6 +64,7 @@ public class ElevatorThread extends Thread {
                 break;
             }
             if (controller.isFinish() && elevator.getNum() == 0 && waitqueue.isEmpty()) {
+                System.out.println(elevator.getId() + "  is finish");
                 break;
             }
             if (elevator.numOfOut() > 0) {
@@ -68,7 +74,9 @@ public class ElevatorThread extends Thread {
             else if (elevator.getNum() < elevator.getCapacity() && isAccess(elevator.getFloor())) {
                 checkPickup();
             }
+//            System.out.println(elevator.getId() + "  try to get suggestion");
             Direction d = strategy.getSuggestion();
+//            System.out.println(elevator.getId() + " get suggestion!");
             long currentTime = System.currentTimeMillis();
             switch (d) {
                 case UP: {
@@ -105,6 +113,7 @@ public class ElevatorThread extends Thread {
         }
         //waitqueue.subCnt(elevator.numOfOut());
         controller.addFinishNum(elevator.numOfFinish());
+//        controller.Print();
         elevator.getoff();
         ArrayList<Request> requests = elevator.getoff();
         for (Request request : requests) {
@@ -163,6 +172,7 @@ public class ElevatorThread extends Thread {
             }
             //waitqueue.subCnt(elevator.numOfOut());
             controller.addFinishNum(elevator.numOfFinish());
+            //controller.Print();
             ArrayList<Request> requests = elevator.clean();
             for (Request request : requests) {
                 requestQueue.addRequest(request);

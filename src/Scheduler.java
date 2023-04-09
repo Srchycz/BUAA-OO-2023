@@ -20,22 +20,26 @@ public class Scheduler extends Thread{
     @Override
     public void run(){
         while (true) {
+            /*
             if (requestQueue.isEnd()) {
                 synchronized (elevatorThreadArrayList) {
                     for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
                         elevatorThread.getWaitqueue().setEnd();
                     }
                 }
-            }
+            }*/
             if (controller.isFinish()) {
                 synchronized (elevatorThreadArrayList) {
                     for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
                         elevatorThread.getWaitqueue().setEnd();
                     }
                 }
+                System.out.println("scheduler is finish");
                 break;
             }
+//            System.out.println("Scheduler get quest?");
             Request request = requestQueue.getOneRequest();
+//            System.out.println("Scheduler get quest!");
             if (request == null) continue;
             assignRequest(request);
         }
@@ -44,23 +48,45 @@ public class Scheduler extends Thread{
     public void assignRequest(Request request) {
         int s = request.getStart();
         int t = request.getNext();
+        int num = 100;
+        ElevatorThread aim = null;
         synchronized (elevatorThreadArrayList) {
             for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
                 if (elevatorThread.isAccess(s) && elevatorThread.isAccess(t)) {
-                    elevatorThread.getWaitqueue().addRequest(request);
-                    return;
+                    if (elevatorThread.getNum() == 0) {
+                        elevatorThread.getWaitqueue().addRequest(request);
+                        return;
+                    }
+                    else if(elevatorThread.getNum() < num) {
+                        aim = elevatorThread;
+                        num = elevatorThread.getNum();
+                    }
                 }
             }
+        }
+        if(aim != null) {
+            aim.getWaitqueue().addRequest(request);
+            return;
         }
         Plan plan = planner.getPlan(request);
         request.setPlan(plan);
         synchronized (elevatorThreadArrayList) {
             for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
                 if (elevatorThread.isAccess(s) && elevatorThread.isAccess(t)) {
-                    elevatorThread.getWaitqueue().addRequest(request);
-                    return;
+                    if (elevatorThread.getNum() == 0) {
+                        elevatorThread.getWaitqueue().addRequest(request);
+                        return;
+                    }
+                    else if(elevatorThread.getNum() < num) {
+                        aim = elevatorThread;
+                        num = elevatorThread.getNum();
+                    }
                 }
             }
+        }
+        if(aim != null) {
+            aim.getWaitqueue().addRequest(request);
+            return;
         }
         System.out.println("Fail in distribute request!");
         assignRequest(request);
