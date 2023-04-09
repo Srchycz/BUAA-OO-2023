@@ -11,9 +11,9 @@ public class Planner {
 
     private boolean isUpdate;
 
-    public Planner(ArrayList<Elevator> elevators) {
-        for(Elevator elevator : elevators) {
-            add(elevator);
+    public Planner(ArrayList<ElevatorThread> elevators) {
+        for(ElevatorThread elevator : elevators) {
+            add(elevator.getElevator());
         }
     }
 
@@ -44,7 +44,7 @@ public class Planner {
         isUpdate = true;
     }
 
-    public Plan getPlan(Request request) {
+    public synchronized Plan getPlan(Request request) {
         if (!isUpdate) {
             Floyd();
         }
@@ -66,11 +66,11 @@ public class Planner {
         getPass(pass[s][t], t, list);
     }
 
-    public void add(Elevator elevator) {
+    public synchronized void add(Elevator elevator) {
         update(elevator, 1);
     }
 
-    public void sub(Elevator elevator) {
+    public synchronized void sub(Elevator elevator) {
         update(elevator, -1);
     }
 

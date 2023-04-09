@@ -16,8 +16,8 @@ public class Plan {
         this.list = list;
     }
 
-    public void remove() {
-        start = list.removeFirst();
+    public int remove() {
+        return start = list.removeFirst();
     }
 
     public int getNext() {

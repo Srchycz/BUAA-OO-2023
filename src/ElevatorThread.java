@@ -6,26 +6,31 @@ public class ElevatorThread extends Thread {
 
     private final PreQueue waitqueue;
 
+    private final RequestQueue requestQueue;
+
     private final Strategy strategy;
 
     private AtomicBoolean toMaintain;
 
     private Controller controller;
 
-    public ElevatorThread(int id, int capacity, double speed, int floor, int access, Controller controller) {
+    public ElevatorThread(int id, int capacity, double speed, int floor, int access,
+                          Controller controller, RequestQueue requestQueue) {
         this.elevator = new Elevator(id, capacity, speed, floor, access);
         this.waitqueue = new PreQueue();
         this.strategy = new Strategy(elevator, waitqueue);
         toMaintain = new AtomicBoolean(false);
         this.controller = controller;
+        this.requestQueue = requestQueue;
     }
 
-    public ElevatorThread(int id, Controller controller) {
+    public ElevatorThread(int id, Controller controller, RequestQueue requestQueue) {
         this.elevator = new Elevator(id);
         this.waitqueue = new PreQueue();
         this.strategy = new Strategy(elevator, waitqueue);
         toMaintain = new AtomicBoolean(false);
         this.controller = controller;
+        this.requestQueue = requestQueue;
     }
 
     public void setMaintain() {
@@ -42,6 +47,10 @@ public class ElevatorThread extends Thread {
         return this.waitqueue;
     }
 
+    public Elevator getElevator() {
+        return this.elevator;
+    }
+
     @Override
     public void run() {
         while (true) {
@@ -53,9 +62,10 @@ public class ElevatorThread extends Thread {
                 break;
             }
             if (elevator.numOfOut() > 0) {
+                assert (isAccess(elevator.getFloor()));
                 exchange();
             }
-            else if (elevator.getNum() < elevator.getCapacity()) {
+            else if (elevator.getNum() < elevator.getCapacity() && isAccess(elevator.getFloor())) {
                 checkPickup();
             }
             Direction d = strategy.getSuggestion();
@@ -94,8 +104,12 @@ public class ElevatorThread extends Thread {
             throw new RuntimeException(e);
         }
         //waitqueue.subCnt(elevator.numOfOut());
-        controller.addFinishNum(elevator.numOfOut());
+        controller.addFinishNum(elevator.numOfFinish());
         elevator.getoff();
+        ArrayList<Request> requests = elevator.getoff();
+        for (Request request : requests) {
+            requestQueue.addRequest(request);
+        }
         while (elevator.getNum() < elevator.getCapacity()) {
             Request request = waitqueue.getRequest(elevator.getFloor(), elevator.getDirection());
             if (request == null) {
@@ -148,10 +162,10 @@ public class ElevatorThread extends Thread {
                 throw new RuntimeException(e);
             }
             //waitqueue.subCnt(elevator.numOfOut());
-            controller.addFinishNum(elevator.numOfOut());
+            controller.addFinishNum(elevator.numOfFinish());
             ArrayList<Request> requests = elevator.clean();
             for (Request request : requests) {
-                waitqueue.addRequest(request);
+                requestQueue.addRequest(request);
             }
             //waitqueue.subCnt(requests.size());
             try {

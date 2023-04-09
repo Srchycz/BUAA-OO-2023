@@ -30,10 +30,17 @@ public class Request {
     }
 
     public int getNext() {
+        if (plan == null) {
+            return destination;
+        }
         return plan.getNext();
     }
 
     public void setPlan(Plan plan) {
         this.plan = plan;
+    }
+
+    public void nxt() {
+        start = plan.remove();
     }
 }

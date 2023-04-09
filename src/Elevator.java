@@ -96,6 +96,16 @@ public class Elevator {
         return cnt;
     }
 
+    public int numOfFinish() {
+        int cnt = 0;
+        for (Request request : requests) {
+            if (request.getDestination() == floor) {
+                ++cnt;
+            }
+        }
+        return cnt;
+    }
+
     public int getCapacity() {
         return capacity;
     }
@@ -104,7 +114,8 @@ public class Elevator {
         return moveTime;
     }
 
-    public void getoff() {
+    public ArrayList<Request> getoff() {
+        ArrayList<Request> requests1 = new ArrayList<>();
         Iterator<Request> iter = requests.iterator();
         while (iter.hasNext()) {
             Request r = iter.next();
@@ -113,10 +124,12 @@ public class Elevator {
                 TimableOutput.println(String.format(
                         "OUT-%d-%d-%d", r.getPersonID(), floor, id));
                 if (floor != r.getDestination()) {
-
+                    r.nxt();
+                    requests1.add(r);
                 }
             }
         }
+        return requests1;
     }
 
     public ArrayList<Request> clean() {
@@ -124,7 +137,7 @@ public class Elevator {
         for (Request request : requests) {
             TimableOutput.println(String.format(
                     "OUT-%d-%d-%d", request.getPersonID(), floor, id));
-            if (request.getDestination() != floor) {
+            if (request.getNext() != floor) {
                 request.setStart(floor);
                 r.add(request);
             }

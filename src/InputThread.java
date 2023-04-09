@@ -15,12 +15,15 @@ public class InputThread extends Thread {
 
     private final Controller controller;
 
-    public InputThread(RequestQueue requestQueue,
-                       ArrayList<ElevatorThread> elevatorThreads, Controller controller) {
+    private final Planner planner;
+
+    public InputThread(RequestQueue requestQueue, ArrayList<ElevatorThread> elevatorThreads,
+                       Controller controller, Planner planner) {
         this.requestQueue = requestQueue;
         elevatorInput = new ElevatorInput(System.in);
         this.elevatorThreads = elevatorThreads;
         this.controller = controller;
+        this.planner = planner;
     }
 
     @Override
@@ -29,6 +32,7 @@ public class InputThread extends Thread {
             com.oocourse.elevator3.Request request = elevatorInput.nextRequest();
 
             if (request == null) {
+                controller.setInputEnd();
                 requestQueue.setEnd();
                 break;
             } else {
@@ -40,20 +44,30 @@ public class InputThread extends Thread {
                     requestQueue.addRequest(r);
                 } else if (request instanceof ElevatorRequest) {
                     ElevatorRequest elevatorRequest = (ElevatorRequest) request;
-
+                    ElevatorThread elevatorThread = new ElevatorThread(
+                            elevatorRequest.getElevatorId(), elevatorRequest.getCapacity(),
+                            elevatorRequest.getSpeed(), elevatorRequest.getAccess(),
+                            elevatorRequest.getFloor(), controller, requestQueue);
+                    synchronized (elevatorThreads) {
+                        elevatorThreads.add(elevatorThread);
+                    }
+                    planner.add(elevatorThread.getElevator());
+                    elevatorThread.start();
                 } else if (request instanceof MaintainRequest) {
                     MaintainRequest maintainRequest = (MaintainRequest) request;
-                    Iterator<ElevatorThread> iter = elevatorThreads.iterator();
-                    while (iter.hasNext()) {
-                        ElevatorThread elevatorThread = iter.next();
-                        if (elevatorThread.getElevatorId() == maintainRequest.getElevatorId()) {
-                            elevatorThread.setMaintain();
-                            iter.remove();
-                            break;
+                    synchronized (elevatorThreads) {
+                        Iterator<ElevatorThread> iter = elevatorThreads.iterator();
+                        while (iter.hasNext()) {
+                            ElevatorThread elevatorThread = iter.next();
+                            if (elevatorThread.getElevatorId() == maintainRequest.getElevatorId()) {
+                                planner.sub(elevatorThread.getElevator());
+                                elevatorThread.setMaintain();
+                                iter.remove();
+                                break;
+                            }
                         }
                     }
                 }
-
             }
         }
     }

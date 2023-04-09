@@ -3,9 +3,16 @@ public class Controller {
 
     private int finishNum;
 
+    private boolean inputEnd;
+
     public Controller() {
         this.expectNum = 0;
         this.finishNum = 0;
+        this.inputEnd = false;
+    }
+
+    public synchronized void setInputEnd() {
+        this.inputEnd = true;
     }
 
     public synchronized void addExpectNum() {
@@ -22,7 +29,6 @@ public class Controller {
 
     public synchronized boolean isFinish() {
         assert (expectNum >= finishNum);
-        return (expectNum == finishNum);
-        end
+        return (expectNum == finishNum) && inputEnd;
     }
 }
