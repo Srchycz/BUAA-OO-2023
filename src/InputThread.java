@@ -43,7 +43,7 @@ public class InputThread extends Thread {
                             personRequest.getFromFloor(), personRequest.getToFloor());
                     controller.addExpectNum();
                     requestQueue.addRequest(r);
-                    System.out.println(requestQueue.isEmpty());
+                    //System.out.println(requestQueue.isEmpty());
                 } else if (request instanceof ElevatorRequest) {
                     ElevatorRequest elevatorRequest = (ElevatorRequest) request;
                     ElevatorThread elevatorThread = new ElevatorThread(

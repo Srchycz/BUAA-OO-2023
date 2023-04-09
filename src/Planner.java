@@ -12,7 +12,7 @@ public class Planner {
     private boolean isUpdate;
 
     public Planner(ArrayList<ElevatorThread> elevators) {
-        for(ElevatorThread elevator : elevators) {
+        for (ElevatorThread elevator : elevators) {
             add(elevator.getElevator());
         }
     }
@@ -30,10 +30,10 @@ public class Planner {
     private void Floyd() {
         init();
         for (int k = 1; k <= 11; ++k) {
-            for (int i = 1; i<= 11; ++i) {
-                if(k == i) { continue; }
+            for (int i = 1; i <= 11; ++i) {
+                if (k == i) { continue; }
                 for (int j = 1; j <= 11; ++j) {
-                    if(k == j) { continue; }
+                    if (k == j) { continue; }
                     if (dist[i][j] > dist[i][k] + dist[k][j]) {
                         dist[i][j] = dist[i][k] + dist[k][j];
                         pass[i][j] = k;
@@ -49,7 +49,8 @@ public class Planner {
             Floyd();
         }
         Plan plan = new Plan(request);
-        int s = request.getStart(), t = request.getDestination();
+        int s = request.getStart();
+        int t = request.getDestination();
         LinkedList<Integer> list = new LinkedList<>();
         getPass(s, t, list);
         list.addLast(t);
@@ -76,7 +77,7 @@ public class Planner {
 
     private void update(Elevator elevator, int k) {
         for (int i = 1; i <= 11; ++ i) {
-            if (!elevator.isAccess(i)) continue;
+            if (!elevator.isAccess(i)) { continue; }
             for (int j = 1; j <= 11; ++ j) {
                 if (elevator.isAccess(j)) {
                     graph[i][j] += k;

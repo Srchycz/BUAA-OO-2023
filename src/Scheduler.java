@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Scheduler extends Thread{
+public class Scheduler extends Thread {
     private final ArrayList<ElevatorThread> elevatorThreadArrayList;
 
     private final RequestQueue requestQueue;
@@ -18,7 +18,7 @@ public class Scheduler extends Thread{
     }
 
     @Override
-    public void run(){
+    public void run() {
         while (true) {
             /*
             if (requestQueue.isEnd()) {
@@ -34,13 +34,11 @@ public class Scheduler extends Thread{
                         elevatorThread.getWaitqueue().setEnd();
                     }
                 }
-                System.out.println("scheduler is finish");
+                //System.out.println("scheduler is finish");
                 break;
             }
-//            System.out.println("Scheduler get quest?");
             Request request = requestQueue.getOneRequest();
-//            System.out.println("Scheduler get quest!");
-            if (request == null) continue;
+            if (request == null) { continue; }
             assignRequest(request);
         }
     }
@@ -54,17 +52,19 @@ public class Scheduler extends Thread{
             for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
                 if (elevatorThread.isAccess(s) && elevatorThread.isAccess(t)) {
                     if (elevatorThread.getNum() == 0) {
+                        //System.out.println("distribute " + request.getPersonID() +
+                        //" to "+ elevatorThread.getElevatorId());
                         elevatorThread.getWaitqueue().addRequest(request);
                         return;
                     }
-                    else if(elevatorThread.getNum() < num) {
+                    else if (elevatorThread.getNum() < num) {
                         aim = elevatorThread;
                         num = elevatorThread.getNum();
                     }
                 }
             }
         }
-        if(aim != null) {
+        if (aim != null) {
             aim.getWaitqueue().addRequest(request);
             return;
         }
@@ -77,14 +77,14 @@ public class Scheduler extends Thread{
                         elevatorThread.getWaitqueue().addRequest(request);
                         return;
                     }
-                    else if(elevatorThread.getNum() < num) {
+                    else if (elevatorThread.getNum() < num) {
                         aim = elevatorThread;
                         num = elevatorThread.getNum();
                     }
                 }
             }
         }
-        if(aim != null) {
+        if (aim != null) {
             aim.getWaitqueue().addRequest(request);
             return;
         }

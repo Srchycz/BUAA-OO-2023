@@ -5,7 +5,6 @@ public class RequestQueue {
     private boolean isEnd;
     private final ArrayList<Request> requests;
 
-
     public RequestQueue() {
         requests = new ArrayList<>();
         this.isEnd = false;
@@ -15,7 +14,6 @@ public class RequestQueue {
         requests.add(request);
         notifyAll();
     }
-
 
     public synchronized boolean isEnd() {
         return isEnd;

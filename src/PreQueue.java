@@ -12,6 +12,7 @@ public class PreQueue {
 
     public synchronized void addRequest(Request request) {
         requests.add(request);
+        //System.out.println("get");
         notifyAll();
     }
 
@@ -76,6 +77,11 @@ public class PreQueue {
         }
         Request request = requests.get(0);
         notifyAll();
+        //System.out.println(requests.size());
         return request;
+    }
+
+    public ArrayList<Request> getRequests() {
+        return this.requests;
     }
 }

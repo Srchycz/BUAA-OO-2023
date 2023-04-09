@@ -64,7 +64,7 @@ public class ElevatorThread extends Thread {
                 break;
             }
             if (controller.isFinish() && elevator.getNum() == 0 && waitqueue.isEmpty()) {
-                System.out.println(elevator.getId() + "  is finish");
+                //System.out.println(elevator.getId() + "  is finish");
                 break;
             }
             if (elevator.numOfOut() > 0) {
@@ -74,9 +74,7 @@ public class ElevatorThread extends Thread {
             else if (elevator.getNum() < elevator.getCapacity() && isAccess(elevator.getFloor())) {
                 checkPickup();
             }
-//            System.out.println(elevator.getId() + "  try to get suggestion");
             Direction d = strategy.getSuggestion();
-//            System.out.println(elevator.getId() + " get suggestion!");
             long currentTime = System.currentTimeMillis();
             switch (d) {
                 case UP: {
@@ -113,7 +111,7 @@ public class ElevatorThread extends Thread {
         }
         //waitqueue.subCnt(elevator.numOfOut());
         controller.addFinishNum(elevator.numOfFinish());
-//        controller.Print();
+        //controller.Print();
         elevator.getoff();
         ArrayList<Request> requests = elevator.getoff();
         for (Request request : requests) {
@@ -163,6 +161,9 @@ public class ElevatorThread extends Thread {
     }
 
     private void Maintain() {
+        for (Request request : waitqueue.getRequests()) {
+            requestQueue.addRequest(request);
+        }
         if (elevator.getNum() > 0) {
             elevator.open();
             try {
