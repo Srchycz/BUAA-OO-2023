@@ -1,11 +1,9 @@
-import java.util.Arrays;
-
 public class Strategy {
     private final Elevator elevator;
 
-    private final RequestQueue requestQueue;
+    private final PreQueue requestQueue;
 
-    public Strategy(Elevator elevator, RequestQueue requestQueue) {
+    public Strategy(Elevator elevator, PreQueue requestQueue) {
         this.elevator = elevator;
         this.requestQueue = requestQueue;
     }
@@ -31,6 +29,7 @@ public class Strategy {
         }
     }
 
+    /*
     public int getCost() {
         int cnt = 0, lim = 12;
         int[] v = new int[12];
@@ -43,5 +42,5 @@ public class Strategy {
             v[des] = 1;
         }
         return lim * ((int)elevator.getMoveTime() / 100) + cnt * 4;
-    }
+    }*/
 }

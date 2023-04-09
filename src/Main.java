@@ -5,14 +5,17 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         TimableOutput.initStartTimestamp();
+        Controller controller = new Controller();
         RequestQueue requestQueue = new RequestQueue();
         ArrayList<ElevatorThread> elevatorThreads = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
-            ElevatorThread elevatorThread = new ElevatorThread(i, requestQueue);
+            ElevatorThread elevatorThread = new ElevatorThread(i, controller);
             elevatorThreads.add(elevatorThread);
             elevatorThread.start();
         }
-        InputThread inputThread = new InputThread(requestQueue, elevatorThreads);
+        Scheduler scheduler = new Scheduler(requestQueue, controller);
+        scheduler.start();
+        InputThread inputThread = new InputThread(requestQueue, elevatorThreads, controller);
         inputThread.start();
     }
 }

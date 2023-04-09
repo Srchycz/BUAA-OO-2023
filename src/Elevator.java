@@ -111,7 +111,7 @@ public class Elevator {
             if (r.getNext() == floor) {
                 iter.remove();
                 TimableOutput.println(String.format(
-                        "OUT-%d-%d-%d", r.getPersonID(), r.getDestination(), id));
+                        "OUT-%d-%d-%d", r.getPersonID(), floor, id));
                 if (floor != r.getDestination()) {
 
                 }
@@ -159,6 +159,7 @@ public class Elevator {
         return ((access >> (floor - 1)) & 1) == 1;
     }
 
+    /*
     public int getCost() {
         int cnt = 0, lim = 12;
         int[] v = new int[12];
@@ -171,5 +172,5 @@ public class Elevator {
             v[des] = 1;
         }
         return lim * ((int)moveTime / 100) + cnt * 4;
-    }
+    }*/
 }

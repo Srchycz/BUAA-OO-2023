@@ -4,24 +4,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ElevatorThread extends Thread {
     private final Elevator elevator;
 
-    private final RequestQueue waitqueue;
+    private final PreQueue waitqueue;
 
     private final Strategy strategy;
 
     private AtomicBoolean toMaintain;
 
-    public ElevatorThread(int id, RequestQueue waitqueue, int capacity, double speed, int floor, int access) {
+    private Controller controller;
+
+    public ElevatorThread(int id, int capacity, double speed, int floor, int access, Controller controller) {
         this.elevator = new Elevator(id, capacity, speed, floor, access);
-        this.waitqueue = waitqueue;
+        this.waitqueue = new PreQueue();
         this.strategy = new Strategy(elevator, waitqueue);
         toMaintain = new AtomicBoolean(false);
+        this.controller = controller;
     }
 
-    public ElevatorThread(int id, RequestQueue waitqueue) {
+    public ElevatorThread(int id, Controller controller) {
         this.elevator = new Elevator(id);
-        this.waitqueue = waitqueue;
+        this.waitqueue = new PreQueue();
         this.strategy = new Strategy(elevator, waitqueue);
         toMaintain = new AtomicBoolean(false);
+        this.controller = controller;
     }
 
     public void setMaintain() {
@@ -34,6 +38,10 @@ public class ElevatorThread extends Thread {
 
     public boolean isAccess(int floor) { return elevator.isAccess(floor); }
 
+    public PreQueue getWaitqueue() {
+        return this.waitqueue;
+    }
+
     @Override
     public void run() {
         while (true) {
@@ -41,7 +49,7 @@ public class ElevatorThread extends Thread {
                 Maintain();
                 break;
             }
-            if (waitqueue.isFinish() && elevator.getNum() == 0 && waitqueue.isEmpty()) {
+            if (controller.isFinish() && elevator.getNum() == 0 && waitqueue.isEmpty()) {
                 break;
             }
             if (elevator.numOfOut() > 0) {
@@ -85,7 +93,8 @@ public class ElevatorThread extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        waitqueue.subCnt(elevator.numOfOut());
+        //waitqueue.subCnt(elevator.numOfOut());
+        controller.addFinishNum(elevator.numOfOut());
         elevator.getoff();
         while (elevator.getNum() < elevator.getCapacity()) {
             Request request = waitqueue.getRequest(elevator.getFloor(), elevator.getDirection());
@@ -138,12 +147,13 @@ public class ElevatorThread extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            waitqueue.subCnt(elevator.numOfOut());
+            //waitqueue.subCnt(elevator.numOfOut());
+            controller.addFinishNum(elevator.numOfOut());
             ArrayList<Request> requests = elevator.clean();
             for (Request request : requests) {
                 waitqueue.addRequest(request);
             }
-            waitqueue.subCnt(requests.size());
+            //waitqueue.subCnt(requests.size());
             try {
                 sleep(200);
             } catch (InterruptedException e) {

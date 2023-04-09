@@ -13,10 +13,14 @@ public class InputThread extends Thread {
 
     private final ArrayList<ElevatorThread> elevatorThreads;
 
-    public InputThread(RequestQueue requestQueue, ArrayList<ElevatorThread> elevatorThreads) {
+    private final Controller controller;
+
+    public InputThread(RequestQueue requestQueue,
+                       ArrayList<ElevatorThread> elevatorThreads, Controller controller) {
         this.requestQueue = requestQueue;
         elevatorInput = new ElevatorInput(System.in);
         this.elevatorThreads = elevatorThreads;
+        this.controller = controller;
     }
 
     @Override
@@ -32,6 +36,7 @@ public class InputThread extends Thread {
                     PersonRequest personRequest = (PersonRequest) request;
                     Request r = new Request(personRequest.getPersonId(),
                             personRequest.getFromFloor(), personRequest.getToFloor());
+                    controller.addExpectNum();
                     requestQueue.addRequest(r);
                 } else if (request instanceof ElevatorRequest) {
                     ElevatorRequest elevatorRequest = (ElevatorRequest) request;

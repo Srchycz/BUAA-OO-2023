@@ -1,21 +1,24 @@
 import java.util.ArrayList;
 
 public class Scheduler extends Thread{
-    private ArrayList<ElevatorThread> elevatorThreadArrayList;
+    private final ArrayList<ElevatorThread> elevatorThreadArrayList;
 
-    private RequestQueue requestQueue;
+    private final RequestQueue requestQueue;
 
     private Planner planner;
 
-    public Scheduler(RequestQueue requestQueue) {
+    private Controller controller;
+
+    public Scheduler(RequestQueue requestQueue, Controller controller) {
         this.requestQueue = requestQueue;
         elevatorThreadArrayList = new ArrayList<>();
+        this.controller = controller;
     }
 
     @Override
     public void run(){
         while (true) {
-            if (requestQueue.isEnd() && /*all request is finished*/) {
+            if (requestQueue.isEnd() && controller.isFinish()) {
                 break;
             }
             Request request = requestQueue.getOneRequest();

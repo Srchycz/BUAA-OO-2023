@@ -1,7 +1,7 @@
 import java.util.LinkedList;
 
 public class Plan {
-    private final int start;
+    private int start;
 
     private final int destination;
 
@@ -17,7 +17,7 @@ public class Plan {
     }
 
     public void remove() {
-        list.removeFirst();
+        start = list.removeFirst();
     }
 
     public int getNext() {
