@@ -16,6 +16,9 @@ public class Controller {
 
     public synchronized void setInputEnd() {
         this.inputEnd = true;
+        if (isFinish()) {
+            requestQueue.setRealEnd();
+        }
     }
 
     public synchronized void addExpectNum() {
@@ -29,6 +32,7 @@ public class Controller {
     public synchronized void addFinishNum(int x) {
         finishNum = finishNum + x;
         if (isFinish()) {
+            //System.out.println("yes");
             requestQueue.setRealEnd();
         }
     }

@@ -13,6 +13,7 @@ public class RequestQueue {
 
     public synchronized void setRealEnd() {
         this.realEnd = true;
+        notifyAll();
     }
 
     public synchronized void addRequest(Request request) {
