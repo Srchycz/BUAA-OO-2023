@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         TimableOutput.initStartTimestamp();
-        Controller controller = new Controller();
         RequestQueue requestQueue = new RequestQueue();
+        Controller controller = new Controller(requestQueue);
         ArrayList<ElevatorThread> elevatorThreads = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
             ElevatorThread elevatorThread = new ElevatorThread(i, controller, requestQueue);

@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Dispatcher{
+public class Dispatcher {
     private ArrayList<ElevatorThread> elevatorThreads;
 
     public void assignRequest(Request request) {

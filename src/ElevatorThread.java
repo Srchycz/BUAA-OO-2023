@@ -51,7 +51,6 @@ public class ElevatorThread extends Thread {
         return this.elevator;
     }
 
-
     public int getNum() {
         return waitqueue.getNum();
     }

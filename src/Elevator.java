@@ -1,7 +1,6 @@
 import com.oocourse.elevator3.TimableOutput;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 public class Elevator {

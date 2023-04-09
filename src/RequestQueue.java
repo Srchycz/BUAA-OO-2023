@@ -1,13 +1,18 @@
 import java.util.ArrayList;
 
 public class RequestQueue {
-
+    private boolean realEnd;
     private boolean isEnd;
     private final ArrayList<Request> requests;
 
     public RequestQueue() {
         requests = new ArrayList<>();
         this.isEnd = false;
+        this.realEnd = false;
+    }
+
+    public synchronized void setRealEnd() {
+        this.realEnd = true;
     }
 
     public synchronized void addRequest(Request request) {
@@ -27,7 +32,7 @@ public class RequestQueue {
     }
 
     public synchronized Request getOneRequest() { // judge pick up
-        while (requests.isEmpty() && !isEnd()) {
+        while (requests.isEmpty() && !realEnd) {
             try {
                 wait();
             } catch (InterruptedException e) {

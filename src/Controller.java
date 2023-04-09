@@ -5,10 +5,13 @@ public class Controller {
 
     private boolean inputEnd;
 
-    public Controller() {
+    private RequestQueue requestQueue;
+
+    public Controller(RequestQueue requestQueue) {
         this.expectNum = 0;
         this.finishNum = 0;
         this.inputEnd = false;
+        this.requestQueue = requestQueue;
     }
 
     public synchronized void setInputEnd() {
@@ -25,6 +28,9 @@ public class Controller {
 
     public synchronized void addFinishNum(int x) {
         finishNum = finishNum + x;
+        if (isFinish()) {
+            requestQueue.setRealEnd();
+        }
     }
 
     public synchronized boolean isFinish() {
