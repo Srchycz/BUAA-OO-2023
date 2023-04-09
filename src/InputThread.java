@@ -48,12 +48,14 @@ public class InputThread extends Thread {
                     ElevatorRequest elevatorRequest = (ElevatorRequest) request;
                     ElevatorThread elevatorThread = new ElevatorThread(
                             elevatorRequest.getElevatorId(), elevatorRequest.getCapacity(),
-                            elevatorRequest.getSpeed(), elevatorRequest.getAccess(),
-                            elevatorRequest.getFloor(), controller, requestQueue);
+                            elevatorRequest.getSpeed(), elevatorRequest.getFloor(),
+                            elevatorRequest.getAccess(), controller, requestQueue);
                     synchronized (elevatorThreads) {
                         elevatorThreads.add(elevatorThread);
                     }
                     planner.add(elevatorThread.getElevator());
+                    //planner.Print();
+                    //System.out.println();
                     elevatorThread.start();
                 } else if (request instanceof MaintainRequest) {
                     MaintainRequest maintainRequest = (MaintainRequest) request;
@@ -64,6 +66,8 @@ public class InputThread extends Thread {
                             //System.out.println(elevatorThread.getElevatorId());
                             if (elevatorThread.getElevatorId() == maintainRequest.getElevatorId()) {
                                 planner.sub(elevatorThread.getElevator());
+                                //planner.Print();
+                                //System.out.println();
                                 elevatorThread.setMaintain();
                                 elevatorThread.getWaitqueue().setEnd();
                                 iter.remove();

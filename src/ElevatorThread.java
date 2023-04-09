@@ -111,9 +111,10 @@ public class ElevatorThread extends Thread {
         //waitqueue.subCnt(elevator.numOfOut());
         controller.addFinishNum(elevator.numOfFinish());
         //controller.Print();
-        elevator.getoff();
         ArrayList<Request> requests = elevator.getoff();
+        //System.out.println(requests.size());
         for (Request request : requests) {
+            //System.out.println(request.getStart() + "->" + request.getNext());
             requestQueue.addRequest(request);
         }
         while (elevator.getNum() < elevator.getCapacity()) {

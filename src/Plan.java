@@ -25,4 +25,12 @@ public class Plan {
         return list.getFirst();
     }
 
+    public void Print() {
+        System.out.print(start);
+        for(Integer i : list) {
+            System.out.print(" -> " + i);
+        }
+        System.out.println();
+    }
+
 }

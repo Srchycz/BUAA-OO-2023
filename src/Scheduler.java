@@ -53,7 +53,7 @@ public class Scheduler extends Thread {
                 if (elevatorThread.isAccess(s) && elevatorThread.isAccess(t)) {
                     if (elevatorThread.getNum() == 0) {
                         //System.out.println("distribute " + request.getPersonID() +
-                        //" to "+ elevatorThread.getElevatorId());
+                        //   " to " + elevatorThread.getElevatorId());
                         elevatorThread.getWaitqueue().addRequest(request);
                         return;
                     }
@@ -70,6 +70,8 @@ public class Scheduler extends Thread {
         }
         Plan plan = planner.getPlan(request);
         request.setPlan(plan);
+        //plan.Print();
+        t = request.getNext();
         synchronized (elevatorThreadArrayList) {
             for (ElevatorThread elevatorThread : elevatorThreadArrayList) {
                 if (elevatorThread.isAccess(s) && elevatorThread.isAccess(t)) {
@@ -89,7 +91,8 @@ public class Scheduler extends Thread {
             return;
         }
         System.out.println("Fail in distribute request!");
-        assignRequest(request);
+        System.exit(0);
+        //assignRequest(request);
     }
 
     public Planner getPlanner() {

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Planner {
-    static final int MaxDist = 0x7fff_ffff;
+    static final int MaxDist = 0xffff;
     private int[][] graph = new int[12][12];
 
     private int[][] pass = new int[12][12];
@@ -15,6 +15,7 @@ public class Planner {
         for (ElevatorThread elevator : elevators) {
             add(elevator.getElevator());
         }
+        this.isUpdate = true;
     }
 
     private void init() {
@@ -27,8 +28,9 @@ public class Planner {
         }
     }
 
-    private void Floyd() {
+    private synchronized void Floyd() {
         init();
+        //Print();
         for (int k = 1; k <= 11; ++k) {
             for (int i = 1; i <= 11; ++i) {
                 if (k == i) { continue; }
@@ -45,13 +47,13 @@ public class Planner {
     }
 
     public synchronized Plan getPlan(Request request) {
+        int s = request.getStart();
+        int t = request.getDestination();
+        Plan plan = new Plan(request);
+        LinkedList<Integer> list = new LinkedList<>();
         if (!isUpdate) {
             Floyd();
         }
-        Plan plan = new Plan(request);
-        int s = request.getStart();
-        int t = request.getDestination();
-        LinkedList<Integer> list = new LinkedList<>();
         getPass(s, t, list);
         list.addLast(t);
         plan.setList(list);
@@ -59,9 +61,10 @@ public class Planner {
     }
 
     private void getPass(int s, int t, LinkedList<Integer> list) {
-        if (pass[s][t] == 0) {
+        if (pass[s][t] == 0 || s == t) {
             return;
         }
+        //System.out.println("s: " + s + " t: " + t + " pass :" + pass[s][t]);
         getPass(s, pass[s][t], list);
         list.addLast(pass[s][t]);
         getPass(pass[s][t], t, list);
@@ -75,7 +78,8 @@ public class Planner {
         update(elevator, -1);
     }
 
-    private void update(Elevator elevator, int k) {
+    private synchronized void update(Elevator elevator, int k) {
+        //elevator.Print();
         for (int i = 1; i <= 11; ++ i) {
             if (!elevator.isAccess(i)) { continue; }
             for (int j = 1; j <= 11; ++ j) {
@@ -85,5 +89,14 @@ public class Planner {
             }
         }
         isUpdate = false;
+    }
+
+    public synchronized void Print() {
+        for (int i = 1; i <= 11; ++i) {
+            for (int j = 1; j <= 11; ++j) {
+                System.out.print(graph[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 }

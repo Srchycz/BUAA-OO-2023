@@ -119,15 +119,17 @@ public class Elevator {
         while (iter.hasNext()) {
             Request r = iter.next();
             if (r.getNext() == floor) {
-                iter.remove();
                 TimableOutput.println(String.format(
                         "OUT-%d-%d-%d", r.getPersonID(), floor, id));
                 if (floor != r.getDestination()) {
                     r.nxt();
+                    //System.out.println(r.getNext()+" "+r.getDestination() + r.getStart());
                     requests1.add(r);
                 }
+                iter.remove();
             }
         }
+        //System.out.println(requests1.size());
         return requests1;
     }
 
@@ -138,6 +140,10 @@ public class Elevator {
                     "OUT-%d-%d-%d", request.getPersonID(), floor, id));
             if (request.getNext() != floor) {
                 request.setStart(floor);
+                r.add(request);
+            }
+            else if (request.getDestination() != floor) {
+                request.nxt();
                 r.add(request);
             }
         }
@@ -155,7 +161,7 @@ public class Elevator {
         if (requests.isEmpty()) {
             return Direction.STAY;
         }
-        if (requests.get(0).getDestination() > floor) {
+        if (requests.get(0).getNext() > floor) {
             return Direction.UP;
         }
         else {
@@ -169,6 +175,10 @@ public class Elevator {
 
     public boolean isAccess(int floor) {
         return ((access >> (floor - 1)) & 1) == 1;
+    }
+
+    public void Print() {
+        System.out.println("id :" + id + " access : " + access + " movetime: " + moveTime);
     }
 
     /*

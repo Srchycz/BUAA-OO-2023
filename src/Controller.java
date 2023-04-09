@@ -31,6 +31,7 @@ public class Controller {
 
     public synchronized void addFinishNum(int x) {
         finishNum = finishNum + x;
+        //System.out.println(finishNum);
         if (isFinish()) {
             //System.out.println("yes");
             requestQueue.setRealEnd();
