@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Strategy {
     private final Elevator elevator;
 
@@ -29,4 +31,17 @@ public class Strategy {
         }
     }
 
+    public int getCost() {
+        int cnt = 0, lim = 12;
+        int[] v = new int[12];
+        Arrays.fill(v, 0);
+        for(Request r: requestQueue) {
+            int des = r.getDestination();
+            lim = Math.max(Math.abs(des - elevator.getFloor()), lim);
+            if (v[des] == 0)
+                ++ cnt;
+            v[des] = 1;
+        }
+        return lim * ((int)elevator.getMoveTime() / 100) + cnt * 4;
+    }
 }

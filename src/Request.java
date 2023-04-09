@@ -5,6 +5,8 @@ public class Request {
 
     private final int destination;
 
+    private Plan plan;
+
     public Request(int id, int start, int destination) {
         person = new Person(id);
         this.start = start;
@@ -25,5 +27,13 @@ public class Request {
 
     public int getDestination() {
         return destination;
+    }
+
+    public int getNext() {
+        return plan.getNext();
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 }

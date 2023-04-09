@@ -1,7 +1,7 @@
-import com.oocourse.elevator2.ElevatorInput;
-import com.oocourse.elevator2.ElevatorRequest;
-import com.oocourse.elevator2.MaintainRequest;
-import com.oocourse.elevator2.PersonRequest;
+import com.oocourse.elevator3.ElevatorInput;
+import com.oocourse.elevator3.ElevatorRequest;
+import com.oocourse.elevator3.MaintainRequest;
+import com.oocourse.elevator3.PersonRequest;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,7 +22,7 @@ public class InputThread extends Thread {
     @Override
     public void run() {
         while (true) {
-            com.oocourse.elevator2.Request request = elevatorInput.nextRequest();
+            com.oocourse.elevator3.Request request = elevatorInput.nextRequest();
 
             if (request == null) {
                 requestQueue.setEnd();
@@ -35,12 +35,6 @@ public class InputThread extends Thread {
                     requestQueue.addRequest(r);
                 } else if (request instanceof ElevatorRequest) {
                     ElevatorRequest elevatorRequest = (ElevatorRequest) request;
-                    ElevatorThread elevatorThread = new ElevatorThread(
-                            elevatorRequest.getElevatorId(), requestQueue,
-                            elevatorRequest.getCapacity(), elevatorRequest.getSpeed(),
-                            elevatorRequest.getFloor());
-                    elevatorThreads.add(elevatorThread);
-                    elevatorThread.start();
 
                 } else if (request instanceof MaintainRequest) {
                     MaintainRequest maintainRequest = (MaintainRequest) request;

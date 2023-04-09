@@ -38,50 +38,20 @@ public class RequestQueue {
 
     public synchronized boolean isFinish() { return isEnd & (cnt == 0); }
 
-    public synchronized Request getRequest(int floor, Direction direction) { // judge pick up
-        int idx = -1;
-        for (int i = 0; i < requests.size(); ++ i) {
-            if (requests.get(i).getStart() == floor) {
-                if (direction == Direction.UP) {
-                    if (requests.get(i).getDestination() > floor) {
-                        idx = i;
-                        break;
-                    }
-                    continue;
-                }
-                if (direction == Direction.DOWN) {
-                    if (requests.get(i).getDestination() < floor) {
-                        idx = i;
-                        break;
-                    }
-                    continue;
-                }
-                idx = i;
-                break;
-            }
-        }
-        if (idx == -1) {
-            notifyAll();
-            return null;
-        }
-        Request request = requests.get(idx);
-        requests.remove(idx);
-        notifyAll();
-        return request;
-    }
-
-    public synchronized Request getTop() {
-        while (requests.isEmpty() && !isFinish()) {
+    public synchronized Request getOneRequest() { // judge pick up
+        while (requests.isEmpty() && !isEnd()) {
             try {
                 wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
         if (requests.isEmpty()) {
+            notifyAll();
             return null;
         }
         Request request = requests.get(0);
+        requests.remove(0);
         notifyAll();
         return request;
     }

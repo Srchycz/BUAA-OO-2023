@@ -1,6 +1,7 @@
-import com.oocourse.elevator2.TimableOutput;
+import com.oocourse.elevator3.TimableOutput;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class Elevator {
@@ -16,15 +17,18 @@ public class Elevator {
 
     private int floor;
 
+    private final int access;
+
     private final ArrayList<Request> requests;
 
-    public Elevator(int id, int capacity, double speed, int floor) {
+    public Elevator(int id, int capacity, double speed, int floor, int access) {
         this.id = id;
         this.floor = floor;
         this.requests = new ArrayList<>();
         this.lastTime = System.currentTimeMillis();
         this.capacity = capacity;
         this.moveTime = (long)(speed * 1000);
+        this.access = access;
     }
 
     public Elevator(int id) {
@@ -34,6 +38,7 @@ public class Elevator {
         this.lastTime = System.currentTimeMillis();
         this.capacity = 6;
         this.moveTime = 400;
+        this.access = 0x7ff;
     }
 
     public int getId() {
@@ -84,7 +89,7 @@ public class Elevator {
     public int numOfOut() {
         int cnt = 0;
         for (Request request : requests) {
-            if (request.getDestination() == floor) {
+            if (request.getNext() == floor) {
                 ++cnt;
             }
         }
@@ -103,10 +108,13 @@ public class Elevator {
         Iterator<Request> iter = requests.iterator();
         while (iter.hasNext()) {
             Request r = iter.next();
-            if (r.getDestination() == floor) {
+            if (r.getNext() == floor) {
                 iter.remove();
                 TimableOutput.println(String.format(
                         "OUT-%d-%d-%d", r.getPersonID(), r.getDestination(), id));
+                if (floor != r.getDestination()) {
+
+                }
             }
         }
     }
@@ -145,5 +153,23 @@ public class Elevator {
 
     public void Maintain() {
         TimableOutput.println(String.format("MAINTAIN_ABLE-%d",  id));
+    }
+
+    public boolean isAccess(int floor) {
+        return ((access >> (floor - 1)) & 1) == 1;
+    }
+
+    public int getCost() {
+        int cnt = 0, lim = 12;
+        int[] v = new int[12];
+        Arrays.fill(v, 0);
+        for(Request r: requests) {
+            int des = r.getDestination();
+            lim = Math.max(Math.abs(des - floor), lim);
+            if (v[des] == 0)
+                ++ cnt;
+            v[des] = 1;
+        }
+        return lim * ((int)moveTime / 100) + cnt * 4;
     }
 }

@@ -10,8 +10,8 @@ public class ElevatorThread extends Thread {
 
     private AtomicBoolean toMaintain;
 
-    public ElevatorThread(int id, RequestQueue waitqueue, int capacity, double speed, int floor) {
-        this.elevator = new Elevator(id, capacity, speed, floor);
+    public ElevatorThread(int id, RequestQueue waitqueue, int capacity, double speed, int floor, int access) {
+        this.elevator = new Elevator(id, capacity, speed, floor, access);
         this.waitqueue = waitqueue;
         this.strategy = new Strategy(elevator, waitqueue);
         toMaintain = new AtomicBoolean(false);
@@ -31,6 +31,8 @@ public class ElevatorThread extends Thread {
     public int getElevatorId() {
         return elevator.getId();
     }
+
+    public boolean isAccess(int floor) { return elevator.isAccess(floor); }
 
     @Override
     public void run() {
