@@ -27,11 +27,7 @@ public interface Person extends Comparable<Person> {
       @ public normal_behavior
       @ requires obj != null && obj instanceof Person;
       @ assignable \nothing;
-      @ ensures \result == (((Person) obj).getId() == id) && (((Person) obj).getName().equals(name)) &&
-      @                    (((Person) obj).getAge() == age) &&
-      @                    (\forall int i; 0 <= i && i < ((Person) obj).getAcquaintance().length; acquaintance[i].equals(((Person) obj).getAcquaintance().get(i))) &&
-      @                    (\forall int i; 0 <= i && i < ((Person) obj).getAcquaintance().length; value[i] == (((Person) obj).queryValue(((Person) obj).getAcquaintance().get(i)))) &&
-      @                    (((Person) obj).getAcquaintance().length == acquaintance.length);
+      @ ensures \result == (((Person) obj).getId() == id);
       @ also
       @ public normal_behavior
       @ requires obj == null || !(obj instanceof Person);
@@ -43,16 +39,16 @@ public interface Person extends Comparable<Person> {
     /*@ public normal_behavior
       @ assignable \nothing;
       @ ensures \result == (\exists int i; 0 <= i && i < acquaintance.length; 
-      @                     acquaintance[i].equals(person) || person.equals(this);
+      @                     acquaintance[i].getId() == person.getId()) || person.getId() == id;
       @*/
     public /*@ pure @*/ boolean isLinked(Person person);
 
     /*@ public normal_behavior
       @ requires (\exists int i; 0 <= i && i < acquaintance.length; 
-      @          acquaintance[i].equals(person));
+      @          acquaintance[i].getId() == person.getId());
       @ assignable \nothing;
-      @ ensures (\exists int i; 0 <= i && i < acquaintance.length; 
-      @         acquaintance[i].equals(person) && \result == value[i]);
+      @ ensures (\exists int i; 0 <= i && i < acquaintance.length;
+      @         acquaintance[i].getId() == person.getId() && \result == value[i]);
       @ also
       @ public normal_behavior
       @ requires (\forall int i; 0 <= i && i < acquaintance.length; 
@@ -60,4 +56,8 @@ public interface Person extends Comparable<Person> {
       @ ensures \result == 0;
       @*/
     public /*@ pure @*/ int queryValue(Person person);
+
+    //@ also ensures \result == name.compareTo(p2.getName());
+    public /*@ pure @*/ int compareTo(Person p2);
+
 }

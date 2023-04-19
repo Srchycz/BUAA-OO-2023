@@ -31,8 +31,9 @@ public interface Network {
       @ requires !(\exists int i; 0 <= i && i < people.length; people[i].equals(person));
       @ assignable people[*];
       @ ensures people.length == \old(people.length) + 1;
-      @ ensures (\forall int i; 0 <= i && i < \old(people.length); \not_modified(\old(people[i])));
-      @ ensures (\exists int i; 0 <= i && i < people.length; people[i].equals(person));
+      @ ensures (\forall int i; 0 <= i && i < \old(people.length);
+      @          (\exists int j; 0 <= j && j < people.length; people[j] == (\old(people[i]))));
+      @ ensures (\exists int i; 0 <= i && i < people.length; people[i] == person);
       @ also
       @ public exceptional_behavior
       @ signals (EqualPersonIdException e) (\exists int i; 0 <= i && i < people.length;
@@ -44,7 +45,8 @@ public interface Network {
       @ requires contains(id1) && contains(id2) && !getPerson(id1).isLinked(getPerson(id2));
       @ assignable people[*];
       @ ensures people.length == \old(people.length);
-      @ ensures (\forall int i; 0 <= i && i < \old(people.length); \not_modified(\old(people[i])));
+      @ ensures (\forall int i; 0 <= i && i < \old(people.length);
+      @          (\exists int j; 0 <= j && j < people.length; people[j] == \old(people[i])));
       @ ensures (\forall int i; 0 <= i && i < people.length && \old(people[i].getId()) != id1 &&
       @     \old(people[i].getId()) != id2; \not_assigned(people[i]));
       @ ensures getPerson(id1).isLinked(getPerson(id2)) && getPerson(id2).isLinked(getPerson(id1));
