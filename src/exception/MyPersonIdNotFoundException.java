@@ -1,11 +1,11 @@
-package Exception;
+package exception;
 
 import com.oocourse.spec1.exceptions.PersonIdNotFoundException;
 
 public class MyPersonIdNotFoundException extends PersonIdNotFoundException {
     private final int id;
 
-    static private final Counter counter = new Counter();
+    private static final Counter counter = new Counter();
 
     public MyPersonIdNotFoundException(int id) {
         this.id = id;

@@ -1,11 +1,11 @@
-package Exception;
+package exception;
 
 import com.oocourse.spec1.exceptions.EqualPersonIdException;
 
 public class MyEqualPersonIdException extends EqualPersonIdException {
     private final int id;
 
-    static private final Counter counter = new Counter();
+    private static final Counter counter = new Counter();
 
     public MyEqualPersonIdException(int id) {
         this.id = id;

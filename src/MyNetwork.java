@@ -4,10 +4,10 @@ import com.oocourse.spec1.exceptions.PersonIdNotFoundException;
 import com.oocourse.spec1.exceptions.RelationNotFoundException;
 import com.oocourse.spec1.main.Network;
 import com.oocourse.spec1.main.Person;
-import Exception.MyEqualPersonIdException;
-import Exception.MyEqualRelationException;
-import Exception.MyPersonIdNotFoundException;
-import Exception.MyRelationNotFoundException;
+import exception.MyEqualPersonIdException;
+import exception.MyEqualRelationException;
+import exception.MyPersonIdNotFoundException;
+import exception.MyRelationNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -105,7 +105,7 @@ public class MyNetwork implements Network {
             return blockSum;
         }
         int sum = 0;
-        for(Integer i : people.keySet()) {
+        for (Integer i : people.keySet()) {
             sum += ((MyPerson) people.get(i)).getFa().equals(people.get(i)) ? 1 : 0;
         }
         blockUpdate = true;
