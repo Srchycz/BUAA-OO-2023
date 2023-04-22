@@ -1,3 +1,5 @@
+package Exception;
+
 import com.oocourse.spec1.exceptions.RelationNotFoundException;
 
 public class MyRelationNotFoundException extends RelationNotFoundException {

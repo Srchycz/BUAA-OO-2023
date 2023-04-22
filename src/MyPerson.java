@@ -10,12 +10,6 @@ public class MyPerson implements Person {
     private final int age;
     private final HashMap<Integer, Person> acquaintance;
     private final HashMap<Integer, Integer> value;
-     /*@ public instance model int id;
-      @ public instance model non_null String name;
-      @ public instance model int age;
-      @ public instance model non_null Person[] acquaintance;
-      @ public instance model non_null int[] value;
-      @*/
 
     public MyPerson(int id, String name, int age) {
         this.id = id;
@@ -26,34 +20,15 @@ public class MyPerson implements Person {
         this.fa = this;
     }
 
+    public int getId() { return this.id; }
 
-    /*@ invariant acquaintance!= null && value != null && acquaintance.length == value.length &&
-      @  (\forall int i,j; 0 <= i && i < j && j < acquaintance.length;
-      @   !acquaintance[i].equals(acquaintance[j]));*/
+    public String getName() { return this.name; }
 
-    //@ ensures \result == id;
-    public /*@ pure @*/ int getId() { return this.id; }
-
-    //@ ensures \result.equals(name);
-    public /*@ pure @*/ String getName() { return this.name; }
-
-    //@ ensures \result == age;
-    public /*@ pure @*/ int getAge() {
+    public int getAge() {
         return this.age;
     }
 
-    /*@ also
-      @ public normal_behavior
-      @ requires obj != null && obj instanceof Person;
-      @ assignable \nothing;
-      @ ensures \result == (((Person) obj).getId() == id);
-      @ also
-      @ public normal_behavior
-      @ requires obj == null || !(obj instanceof Person);
-      @ assignable \nothing;
-      @ ensures \result == false;
-      @*/
-    public /*@ pure @*/ boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         assert (obj != null);
         if (obj instanceof Person) {
             return (((Person) obj).getId() == id);
@@ -63,11 +38,6 @@ public class MyPerson implements Person {
         }
     }
 
-    /*@ public normal_behavior
-      @ assignable \nothing;
-      @ ensures \result == (\exists int i; 0 <= i && i < acquaintance.length;
-      @                     acquaintance[i].getId() == person.getId()) || person.getId() == id;
-      @*/
     public /*@ pure @*/ boolean isLinked(Person person) {
         if (person.getId() == id) {
             return true;
@@ -75,18 +45,6 @@ public class MyPerson implements Person {
         return acquaintance.containsKey(person.getId());
     }
 
-    /*@ public normal_behavior
-      @ requires (\exists int i; 0 <= i && i < acquaintance.length;
-      @          acquaintance[i].getId() == person.getId());
-      @ assignable \nothing;
-      @ ensures (\exists int i; 0 <= i && i < acquaintance.length;
-      @         acquaintance[i].getId() == person.getId() && \result == value[i]);
-      @ also
-      @ public normal_behavior
-      @ requires (\forall int i; 0 <= i && i < acquaintance.length;
-      @          acquaintance[i].getId() != person.getId());
-      @ ensures \result == 0;
-      @*/
     public /*@ pure @*/ int queryValue(Person person) {
         if (acquaintance.containsKey(person.getId())) {
             return value.get(person.getId());
@@ -94,7 +52,6 @@ public class MyPerson implements Person {
         return 0;
     }
 
-    //@ also ensures \result == name.compareTo(p2.getName());
     public /*@ pure @*/ int compareTo(Person p2) {
         return name.compareTo(p2.getName());
     }
@@ -110,5 +67,9 @@ public class MyPerson implements Person {
             return fa;
         }
         return this.fa = fa.getFa();
+    }
+
+    public HashMap<Integer, Person> getAcquaintance() {
+        return this. acquaintance;
     }
 }

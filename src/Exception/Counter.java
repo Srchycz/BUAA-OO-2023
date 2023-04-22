@@ -1,3 +1,5 @@
+package Exception;
+
 import java.util.HashMap;
 
 public class Counter {
