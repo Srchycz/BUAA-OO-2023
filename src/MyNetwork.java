@@ -11,6 +11,7 @@ import exception.MyRelationNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MyNetwork implements Network {
 
@@ -82,7 +83,7 @@ public class MyNetwork implements Network {
         if (!contains(id2)) {
             throw new MyPersonIdNotFoundException(id2);
         }
-        if (getPerson(id1).isLinked(getPerson(id2))) {
+        if (!getPerson(id1).isLinked(getPerson(id2))) {
             throw new MyRelationNotFoundException(id1, id2);
         }
         return getPerson(id1).queryValue(getPerson(id2));
@@ -141,9 +142,40 @@ public class MyNetwork implements Network {
                 && u.getId() < v.getId());
     }
 
+    /*@ ensures \result ==
+      @         (\sum int i; 0 <= i && i < people.length;
+      @             (\sum int j; i < j && j < people.length;
+      @                 (\sum int k; j < k && k < people.length
+      @                     && getPerson(people[i].getId()).isLinked(getPerson(people[j].getId()))
+      @                     && getPerson(people[j].getId()).isLinked(getPerson(people[k].getId()))
+      @                     && getPerson(people[k].getId()).isLinked(getPerson(people[i].getId()));
+      @                     1)));
+      @*/
     public boolean queryTripleSumOKTest(HashMap<Integer, HashMap<Integer, Integer>> beforeData,
                                         HashMap<Integer, HashMap<Integer, Integer>> afterData,
                                         int result) {
-        return true;
+        if (!beforeData.equals(afterData)) {
+            return false;
+        }
+        long res = 0;
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> i : beforeData.entrySet()) {
+            for (Map.Entry<Integer, HashMap<Integer, Integer>> j : beforeData.entrySet()) {
+                if (Objects.equals(i.getKey(), j.getKey())) {
+                    continue;
+                }
+                for (Map.Entry<Integer, HashMap<Integer, Integer>> k : beforeData.entrySet()) {
+                    if (Objects.equals(i.getKey(), k.getKey())
+                            || Objects.equals(j.getKey(), k.getKey())) {
+                        continue;
+                    }
+                    if (i.getValue().containsKey(j.getKey())
+                            && j.getValue().containsKey(k.getKey())
+                            && k.getValue().containsKey(i.getKey())) {
+                        ++ res;
+                    }
+                }
+            }
+        }
+        return res == result;
     }
 }
