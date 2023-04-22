@@ -176,6 +176,6 @@ public class MyNetwork implements Network {
                 }
             }
         }
-        return res == result;
+        return (res / 6) == result;
     }
 }

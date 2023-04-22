@@ -13,6 +13,19 @@ public class Counter {
     }
 
     public void count(int id) {
+        countId(id);
+        ++ total;
+    }
+
+    public void count(int id1, int id2) {
+        countId(id1);
+        if (id1 != id2) {
+            countId(id2);
+        }
+        ++ total;
+    }
+
+    private void countId(int id) {
         if (cnt.containsKey(id)) {
             int temp = cnt.get(id);
             cnt.replace(id, temp + 1);
@@ -20,7 +33,6 @@ public class Counter {
         else {
             cnt.put(id, 1);
         }
-        ++ total;
     }
 
     public int getTotal() {

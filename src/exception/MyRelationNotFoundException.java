@@ -12,10 +12,7 @@ public class MyRelationNotFoundException extends RelationNotFoundException {
     public MyRelationNotFoundException(int id1, int id2) {
         this.id1 = id1;
         this.id2 = id2;
-        counter.count(id1);
-        if (id1 != id2) {
-            counter.count(id2);
-        }
+        counter.count(id1, id2);
     }
 
     public void print() {
