@@ -107,7 +107,9 @@ public class MyNetwork implements Network {
         }
         int sum = 0;
         for (Integer i : people.keySet()) {
-            sum += ((MyPerson) people.get(i)).getFa().equals(people.get(i)) ? 1 : 0;
+            if (((MyPerson) people.get(i)).getFa().equals(people.get(i))) {
+                ++ sum;
+            }
         }
         blockUpdate = true;
         return blockSum = sum;
@@ -127,7 +129,7 @@ public class MyNetwork implements Network {
                 }
                 for (Map.Entry<Integer, Person> k : v.getAcquaintance().entrySet()) {
                     MyPerson w = (MyPerson) k.getValue();
-                    if (hasEdge(u, w)) {
+                    if (u.isLinked(w) && hasEdge(u, w) && hasEdge(w, v)) {
                         ++ sum;
                     }
                 }

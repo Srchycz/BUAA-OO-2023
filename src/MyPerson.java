@@ -59,7 +59,7 @@ public class MyPerson implements Person {
     public void addAcquaintance(Person person, Integer v) {
         acquaintance.put(person.getId(), person);
         value.put(person.getId(), v);
-        this.fa = ((MyPerson) person).getFa();
+        setFa(((MyPerson) person).getFa());
     }
 
     public MyPerson getFa() {
@@ -67,6 +67,15 @@ public class MyPerson implements Person {
             return fa;
         }
         return this.fa = fa.getFa();
+    }
+
+    private void setFa(MyPerson person) {
+        if (fa.getId() == id) {
+            this.fa = person;
+        }
+        else {
+            getFa().setFa(person);
+        }
     }
 
     public HashMap<Integer, Person> getAcquaintance() {
