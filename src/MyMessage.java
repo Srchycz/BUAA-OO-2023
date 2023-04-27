@@ -4,11 +4,11 @@ import com.oocourse.spec2.main.Person;
 
 public class MyMessage implements Message {
     private final int id;
-    private int socialValue;
+    private final int socialValue;
     private final int type;
-    private Person person1;
-    private Person person2;
-    private Group group;
+    private final Person person1;
+    private final Person person2;
+    private final Group group;
      /*@ public instance model int id;
       @ public instance model int socialValue;
       @ public instance model int type;
@@ -17,18 +17,19 @@ public class MyMessage implements Message {
       @ public instance model nullable Group group;
       @*/
 
-    public MyMessage(int id, int socialValue, int type, Person person1, Person person2) {
+    public MyMessage(int id, int socialValue, Person person1, Person person2) {
         this.id = id;
         this.socialValue = socialValue;
-        this.type = type;
+        this.type = 0;
+        this.group = null;
         this.person1 = person1;
         this.person2 = person2;
     }
 
-    public MyMessage(int id, int socialValue, int type, Person person1, Group group) {
+    public MyMessage(int id, int socialValue, Person person1, Group group) {
         this.id = id;
         this.socialValue = socialValue;
-        this.type = type;
+        this.type = 1;
         this.person1 = person1;
         this.group = group;
         this.person2 = null;

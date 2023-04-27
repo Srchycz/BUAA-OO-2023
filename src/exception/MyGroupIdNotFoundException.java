@@ -2,12 +2,12 @@ package exception;
 
 import com.oocourse.spec2.exceptions.GroupIdNotFoundException;
 
-public class MyGroupNotFoundException extends GroupIdNotFoundException {
+public class MyGroupIdNotFoundException extends GroupIdNotFoundException {
     private final int id;
 
     private static final Counter counter = new Counter();
 
-    public MyGroupNotFoundException(int id) {
+    public MyGroupIdNotFoundException(int id) {
         this.id = id;
         counter.count(id);
     }

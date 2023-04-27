@@ -7,12 +7,16 @@ import java.util.Map;
 public class MyGroup implements Group {
     private final int id;
     private final HashMap<Integer, Person> people;
+    private int sumAge;
+    private int sumPowAge;
      /*@ public instance model int id;
       @ public instance model non_null Person[] people;
       @*/
     public MyGroup(int id) {
         this.id = id;
         this.people = new HashMap<>();
+        this.sumAge = 0;
+        this.sumPowAge = 0;
     }
 
     //@ ensures \result == id;
@@ -48,6 +52,8 @@ public class MyGroup implements Group {
     public void addPerson(/*@ non_null @*/Person person) {
         assert (!hasPerson(person));
         people.put(person.getId(), person);
+        this.sumAge += person.getAge();
+        this.sumPowAge += person.getAge() * person.getAge();
     }
 
     //@ ensures \result == (\exists int i; 0 <= i && i < people.length; people[i].equals(person));
@@ -78,11 +84,7 @@ public class MyGroup implements Group {
       @          ((\sum int i; 0 <= i && i < people.length; people[i].getAge()) / people.length));
       @*/
     public /*@ pure @*/ int getAgeMean() {
-        int res = 0;
-        for (Map.Entry<Integer, Person> i : people.entrySet()) {
-            res += i.getValue().getAge();
-        }
-        return res / people.size();
+        return sumAge / people.size();
     }
 
     /*@ ensures \result == (people.length == 0? 0 : ((\sum int i; 0 <= i && i < people.length;
@@ -91,11 +93,7 @@ public class MyGroup implements Group {
       @*/
     public /*@ pure @*/ int getAgeVar() {
         int mean = getAgeMean();
-        int res = 0;
-        for (Map.Entry<Integer, Person> i : people.entrySet()) {
-            res += (i.getValue().getAge() - mean) * (i.getValue().getAge() - mean);
-        }
-        return res / people.size();
+        return (sumPowAge - 2 * mean * sumAge + getSize() * mean * mean) / people.size();
     }
 
     /*@ public normal_behavior
@@ -108,10 +106,18 @@ public class MyGroup implements Group {
     public void delPerson(/*@ non_null @*/Person person) {
         assert (hasPerson(person));
         people.remove(person.getId());
+        this.sumAge -= person.getAge();
+        this.sumPowAge -= person.getAge() * person.getAge();
     }
 
     //@ ensures \result == people.length;
     public /*@ pure @*/ int getSize() {
         return people.size();
+    }
+
+    public void addSocialValue(int num) {
+        for (Map.Entry<Integer, Person> i : people.entrySet()) {
+            i.getValue().addSocialValue(num);
+        }
     }
 }
