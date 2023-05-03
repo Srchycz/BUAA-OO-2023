@@ -23,24 +23,18 @@ import exception.MyEqualRelationException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public class MyNetwork implements Network {
-
     private int blockSum;
-
     private int tripleSum;
-
     private boolean blockUpdate;
-
     private boolean tripleUpdate;
-
     private final HashMap<Integer, Person> people;
-
     private final HashMap<Integer, Group> groups;
-
     private final HashMap<Integer, Message> messages;
 
     public MyNetwork() {
@@ -48,7 +42,7 @@ public class MyNetwork implements Network {
         this.tripleSum = 0;
         this.blockUpdate = true;
         this.tripleUpdate = false;
-        people = new HashMap<>();
+        this.people = new HashMap<>();
         this.groups = new HashMap<>();
         this.messages = new HashMap<>();
     }
@@ -69,7 +63,7 @@ public class MyNetwork implements Network {
             throw new MyEqualPersonIdException(person.getId());
         }
         people.put(person.getId(), person);
-        blockSum += 1;
+        ++ blockSum;
     }
 
     public void addRelation(int id1, int id2, int value) throws
@@ -114,8 +108,7 @@ public class MyNetwork implements Network {
         ((MyPerson) person1).modifyRelation(id2, value);
         ((MyPerson) person2).modifyRelation(id1, value);
         if (!person1.isLinked(person2)) {
-            tripleUpdate = false;
-            blockUpdate = false;
+            tripleUpdate = blockUpdate = false;
         }
     }
 
@@ -156,7 +149,6 @@ public class MyNetwork implements Network {
                 return true;
             }
             MyPerson now2 = (MyPerson) q2.poll();
-            assert now2 != null;
             if (bfs(id1, id2, vis, q2, now2)) {
                 return true;
             }
@@ -179,7 +171,7 @@ public class MyNetwork implements Network {
         return false;
     }
 
-    public /*@ pure @*/ int queryBlockSum() {
+    public int queryBlockSum() {
         if (blockUpdate) {
             return blockSum;
         }
@@ -200,14 +192,13 @@ public class MyNetwork implements Network {
         vis.put(idx, true);
         MyPerson person = (MyPerson) getPerson(idx);
         for (Integer i : person.getAcquaintance().keySet()) {
-            if (vis.containsKey(i)) {
-                continue;
+            if (!vis.containsKey(i)) {
+                dfs(i, vis);
             }
-            dfs(i, vis);
         }
     }
 
-    public /*@ pure @*/ int queryTripleSum() {
+    public int queryTripleSum() {
         if (tripleUpdate) {
             return tripleSum;
         }
@@ -216,13 +207,12 @@ public class MyNetwork implements Network {
             MyPerson u = (MyPerson) i.getValue();
             for (Map.Entry<Integer, Person> j : u.getAcquaintance().entrySet()) {
                 MyPerson v = (MyPerson) j.getValue();
-                if (!hasEdge(u, v)) {
-                    continue;
-                }
-                for (Map.Entry<Integer, Person> k : v.getAcquaintance().entrySet()) {
-                    MyPerson w = (MyPerson) k.getValue();
-                    if (u.isLinked(w) && hasEdge(u, w) && hasEdge(w, v)) {
-                        ++ sum;
+                if (hasEdge(u, v)) {
+                    for (Map.Entry<Integer, Person> k : v.getAcquaintance().entrySet()) {
+                        MyPerson w = (MyPerson) k.getValue();
+                        if (u.isLinked(w) && hasEdge(u, w) && hasEdge(w, v)) {
+                            ++ sum;
+                        }
                     }
                 }
             }
@@ -231,9 +221,8 @@ public class MyNetwork implements Network {
     }
 
     private boolean hasEdge(MyPerson u, MyPerson v) {
-        return (u.getAcquaintance().size() < v.getAcquaintance().size())
-                || (u.getAcquaintance().size() == v.getAcquaintance().size()
-                && u.getId() < v.getId());
+        return (u.getAcquaintance().size() < v.getAcquaintance().size()) ||
+                (u.getAcquaintance().size() == v.getAcquaintance().size() && u.getId() < v.getId());
     }
 
     public void addGroup(Group group) throws EqualGroupIdException {
@@ -243,51 +232,13 @@ public class MyNetwork implements Network {
         groups.put(group.getId(), group);
     }
 
-    /*@ public normal_behavior
-      @ requires (\exists int i; 0 <= i && i < groups.length; groups[i].getId() == id);
-      @ ensures (\exists int i; 0 <= i && i < groups.length; groups[i].getId() == id &&
-      @         \result == groups[i]);
-      @ also
-      @ public normal_behavior
-      @ requires (\forall int i; 0 <= i && i < groups.length; groups[i].getId() != id);
-      @ ensures \result == null;
-      @*/
-    public /*@ pure @*/ Group getGroup(int id) {
+    public Group getGroup(int id) {
         if (groups.containsKey(id)) {
             return groups.get(id);
         }
         return null;
     }
 
-
-    /*@ public normal_behavior
-      @ requires (\exists int i; 0 <= i && i < groups.length; groups[i].getId() == id2) &&
-      @           (\exists int i; 0 <= i && i < people.length; people[i].getId() == id1) &&
-      @            getGroup(id2).hasPerson(getPerson(id1)) == false &&
-      @             getGroup(id2).people.length <= 1111;
-      @ assignable getGroup(id2).people[*];
-      @ ensures (\forall Person i; \old(getGroup(id2).hasPerson(i));
-      @          getGroup(id2).hasPerson(i));
-      @ ensures \old(getGroup(id2).people.length) == getGroup(id2).people.length - 1;
-      @ ensures getGroup(id2).hasPerson(getPerson(id1));
-      @ also
-      @ public normal_behavior
-      @ requires (\exists int i; 0 <= i && i < groups.length; groups[i].getId() == id2) &&
-      @           (\exists int i; 0 <= i && i < people.length; people[i].getId() == id1) &&
-      @            getGroup(id2).hasPerson(getPerson(id1)) == false &&
-      @             getGroup(id2).people.length > 1111;
-      @ assignable \nothing;
-      @ also
-      @ public exceptional_behavior
-      @ signals (GroupIdNotFoundException e) !(\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id2);
-      @ signals (PersonIdNotFoundException e) (\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id2) && !(\exists int i; 0 <= i && i < people.length;
-      @           people[i].getId() == id1);
-      @ signals (EqualPersonIdException e) (\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id2) && (\exists int i; 0 <= i && i < people.length;
-      @           people[i].getId() == id1) && getGroup(id2).hasPerson(getPerson(id1));
-      @*/
     public void addToGroup(int id1, int id2) throws GroupIdNotFoundException,
             PersonIdNotFoundException, EqualPersonIdException {
         Group group = getGroup(id2);
@@ -306,16 +257,7 @@ public class MyNetwork implements Network {
         }
     }
 
-
-    /*@ public normal_behavior
-      @ requires (\exists int i; 0 <= i && i < groups.length; groups[i].getId() == id);
-      @ ensures \result == getGroup(id).getValueSum();
-      @ also
-      @ public exceptional_behavior
-      @ signals (GroupIdNotFoundException e) !(\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id);
-      @*/
-    public /*@ pure @*/ int queryGroupValueSum(int id) throws GroupIdNotFoundException {
+    public int queryGroupValueSum(int id) throws GroupIdNotFoundException {
         Group group = getGroup(id);
         if (group == null) {
             throw new MyGroupIdNotFoundException(id);
@@ -323,15 +265,7 @@ public class MyNetwork implements Network {
         return group.getValueSum();
     }
 
-    /*@ public normal_behavior
-      @ requires (\exists int i; 0 <= i && i < groups.length; groups[i].getId() == id);
-      @ ensures \result == getGroup(id).getAgeVar();
-      @ also
-      @ public exceptional_behavior
-      @ signals (GroupIdNotFoundException e) !(\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id);
-      @*/
-    public /*@ pure @*/ int queryGroupAgeVar(int id) throws GroupIdNotFoundException {
+    public int queryGroupAgeVar(int id) throws GroupIdNotFoundException {
         Group group = getGroup(id);
         if (group == null) {
             throw new MyGroupIdNotFoundException(id);
@@ -339,26 +273,6 @@ public class MyNetwork implements Network {
         return group.getAgeVar();
     }
 
-    /*@ public normal_behavior
-      @ requires (\exists int i; 0 <= i && i < groups.length; groups[i].getId() == id2) &&
-      @           (\exists int i; 0 <= i && i < people.length; people[i].getId() == id1) &&
-      @            getGroup(id2).hasPerson(getPerson(id1)) == true;
-      @ assignable getGroup(id2).people[*];
-      @ ensures (\forall Person i; getGroup(id2).hasPerson(i);
-      @          \old(getGroup(id2).hasPerson(i)));
-      @ ensures \old(getGroup(id2).people.length) == getGroup(id2).people.length + 1;
-      @ ensures getGroup(id2).hasPerson(getPerson(id1)) == false;
-      @ also
-      @ public exceptional_behavior
-      @ signals (GroupIdNotFoundException e) !(\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id2);
-      @ signals (PersonIdNotFoundException e) (\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id2) && !(\exists int i; 0 <= i && i < people.length;
-      @           people[i].getId() == id1);
-      @ signals (EqualPersonIdException e) (\exists int i; 0 <= i && i < groups.length;
-      @          groups[i].getId() == id2) && (\exists int i; 0 <= i && i < people.length;
-      @           people[i].getId() == id1) && !getGroup(id2).hasPerson(getPerson(id1));
-      @*/
     public void delFromGroup(int id1, int id2)
             throws GroupIdNotFoundException, PersonIdNotFoundException, EqualPersonIdException {
         Group group = getGroup(id2);
@@ -418,8 +332,7 @@ public class MyNetwork implements Network {
             ((MyPerson) person2).addMessage(message);
         }
         else {
-            MyGroup group = (MyGroup) message.getGroup();
-            group.addSocialValue(message.getSocialValue());
+            ((MyGroup) message.getGroup()).addSocialValue(message.getSocialValue());
         }
         messages.remove(message.getId());
     }
@@ -441,20 +354,7 @@ public class MyNetwork implements Network {
         return person.getReceivedMessages();
     }
 
-
-    /*@ public normal_behavior
-      @ requires contains(id) && getPerson(id).acquaintance.length != 0;
-      @ ensures \result == (\min int bestIdx;
-      @     0 <= bestIdx && bestIdx < getPerson(id).acquaintance.length &&
-      @     (\forall int i; 0 <= i && i < getPerson(id).acquaintance.length;
-      @         getPerson(id).value[i] <= getPerson(id).value[bestIdx]);
-      @     getPerson(id).acquaintance[bestIdx].getId());
-      @ public exceptional_behavior
-      @ signals (PersonIdNotFoundException e) !contains(id);
-      @ signals (AcquaintanceNotFoundException e) contains(id) &&
-      @         getPerson(id).acquaintance.length == 0;
-      @*/
-    public /*@ pure @*/ int queryBestAcquaintance(int id) throws
+    public int queryBestAcquaintance(int id) throws
             PersonIdNotFoundException, AcquaintanceNotFoundException {
         MyPerson person = (MyPerson) getPerson(id);
         if (person == null) {
@@ -471,75 +371,130 @@ public class MyNetwork implements Network {
         for (Map.Entry<Integer, Person> i : people.entrySet()) {
             MyPerson p = (MyPerson) i.getValue();
             if (p.getAcquaintance().size() > 0) {
-                int best = p.bestIdx();
-                MyPerson q = (MyPerson) getPerson(best);
-                if (q.getAcquaintance().size() > 0) {
-                    if (q.bestIdx() == i.getKey()) {
-                        ++ res;
-                    }
+                MyPerson q = (MyPerson) getPerson(p.bestIdx());
+                if (q.getAcquaintance().size() > 0 && q.bestIdx() == i.getKey()) {
+                    ++ res;
                 }
             }
         }
         return res >> 1;
     }
 
-    /*@ public normal_behavior
-      @ requires contains(id1) && contains(id2) && id1 != id2 && getPerson(id1).isLinked(getPerson(id2))
-                && getPerson(id1).queryValue(getPerson(id2)) + value > 0;
-      @ assignable people;
-      @ 1 ensures people.length == \old(people.length);
-      @ 2 ensures (\forall int i; 0 <= i && i < \old(people.length);
-      @          (\exists int j; 0 <= j && j < people.length; people[j].getId() == \old(people[i]).getId()));
-      @ 3 ensures (\forall int i; 0 <= i && i < people.length && \old(people[i].getId()) != id1 &&
-      @     \old(people[i].getId()) != id2; \not_assigned(people[i]));
-      @ 4 ensures getPerson(id1).isLinked(getPerson(id2)) && getPerson(id2).isLinked(getPerson(id1));
-      @ 5 ensures getPerson(id1).queryValue(getPerson(id2)) == \old(getPerson(id1).queryValue(getPerson(id2))) + value;
-      @ 6 ensures getPerson(id2).queryValue(getPerson(id1)) == \old(getPerson(id2).queryValue(getPerson(id1))) + value;
-      @ 7 ensures getPerson(id1).acquaintance.length == \old(getPerson(id1).acquaintance.length);
-      @ 8 ensures getPerson(id2).acquaintance.length == \old(getPerson(id2).acquaintance.length);
-      @ 9 ensures (\forall int i; 0 <= i && i < getPerson(id1).acquaintance.length; getPerson(id1).acquaintance[i].equals(\old(getPerson(id1).acquaintance[i]));
-      @ 10 ensures (\forall int i; 0 <= i && i < getPerson(id2).acquaintance.length; getPerson(id2).acquaintance[i].equals(\old(getPerson(id2).acquaintance[i]));
-      @ 11 ensures (\forall int i; 0 <= i && i < getPerson(id1).acquaintance.length && getPerson(id1).acquaintance[i].getId() != id2;
-      @             getPerson(id1).value[i] == \old(getPerson(id1).value[i]));
-      @ 12 ensures (\forall int i; 0 <= i && i < getPerson(id2).acquaintance.length && getPerson(id2).acquaintance[i].getId() != id1;
-      @             getPerson(id2).value[i] == \old(getPerson(id2).value[i]));
-      @ 13 ensures getPerson(id1).value.length == getPerson(id1).acquaintance.length;
-      @ 14 ensures getPerson(id2).value.length == getPerson(id2).acquaintance.length;
-      @ also
-      @ public normal_behavior
-      @ requires contains(id1) && contains(id2) && id1 != id2 && getPerson(id1).isLinked(getPerson(id2))
-      @         && getPerson(id1).queryValue(getPerson(id2)) + value <= 0;
-      @ 1 ensures people.length == \old(people.length);
-      @ 2 ensures (\forall int i; 0 <= i && i < \old(people.length);
-      @          (\exists int j; 0 <= j && j < people.length; people[j] == \old(people[i])));
-      @ 3 ensures (\forall int i; 0 <= i && i < people.length && \old(people[i].getId()) != id1 &&
-      @     \old(people[i].getId()) != id2; \not_assigned(people[i]));
-      @ 15 ensures !getPerson(id1).isLinked(getPerson(id2)) && !getPerson(id2).isLinked(getPerson(id1));
-      @ 16 ensures \old(getPerson(id1).value.length) == getPerson(id1).acquaintance.length + 1;
-      @ 17 ensures \old(getPerson(id2).value.length) == getPerson(id2).acquaintance.length + 1;
-      @ 18 ensures getPerson(id1).value.length == getPerson(id1).acquaintance.length;
-      @ 19 ensures getPerson(id2).value.length == getPerson(id2).acquaintance.length;
-      @ 20 ensures (\forall int i; 0 <= i && i < getPerson(id1).acquaintance.length;
-      @         \old(getPerson(id1).acquaintance[i]) == getPerson(id1).acquaintance[i] &&
-      @          \old(getPerson(id1).value[i]) == getPerson(id1).value[i]);
-      @ 21 ensures (\forall int i; 0 <= i && i < getPerson(id2).acquaintance.length;
-      @         \old(getPerson(id2).acquaintance[i]) == getPerson(id2).acquaintance[i] &&
-      @          \old(getPerson(id2).value[i]) == getPerson(id2).value[i]);
-      @ also
-      @ public exceptional_behavior
-      @ assignable \nothing;
-      @ requires !contains(id1) || !contains(id2) || !getPerson(id1).isLinked(getPerson(id2));
-      @ signals (PersonIdNotFoundException e) !contains(id1);
-      @ signals (PersonIdNotFoundException e) contains(id1) && !contains(id2);
-      @ signals (EqualPersonIdException e) contains(id1) && contains(id2) && id1 == id2;
-      @ signals (RelationNotFoundException e) contains(id1) && contains(id2) && id1 != id2 &&
-      @         !getPerson(id1).isLinked(getPerson(id2));
-      @*/
     public int modifyRelationOKTest(int id1, int id2, int value,
                                     HashMap<Integer, HashMap<Integer, Integer>> beforeData,
                                     HashMap<Integer, HashMap<Integer, Integer>> afterData) {
+        if (beforeData.containsKey(id1) && beforeData.containsKey(id2) && id1 != id2 &&
+                beforeData.get(id1).containsKey(id2) && beforeData.get(id1).get(id2) + value > 0) {
+            return okTestPart1(id1, id2, value, beforeData, afterData);
+        }
+        else if (beforeData.containsKey(id1) && beforeData.containsKey(id2) && id1 != id2 &&
+            beforeData.get(id1).containsKey(id2) && beforeData.get(id1).get(id2) + value <= 0) {
+            return okTestPart2(id1, id2, value, beforeData, afterData);
+        }
+        else {
+            return beforeData.equals(afterData) ? 0 : -1;
+        }
+    }
 
+    private int okTestPart1(int id1, int id2, int value,
+                            HashMap<Integer, HashMap<Integer, Integer>> beforeData,
+                            HashMap<Integer, HashMap<Integer, Integer>> afterData) {
+        int res = test1to3(id1, id2, beforeData, afterData);
+        if (res > 0) {
+            return res;
+        }
+        if (!beforeData.get(id1).containsKey(id2) || !afterData.get(id2).containsKey(id1)) {
+            return 4;
+        }
+        if (beforeData.get(id1).get(id2) + value != afterData.get(id2).get(id1)) {
+            return 5;
+        }
+        if (beforeData.get(id2).get(id1) + value != afterData.get(id1).get(id2)) {
+            return 6;
+        }
+        if (beforeData.get(id1).size() != afterData.get(id1).size()) {
+            return 7;
+        }
+        if (beforeData.get(id2).size() != afterData.get(id2).size()) {
+            return 8;
+        }
+        for (int i : beforeData.get(id1).keySet()) {
+            if (!afterData.get(id1).containsKey(i)) {
+                return 9;
+            }
+        }
+        for (int i : beforeData.get(id2).keySet()) {
+            if (!afterData.get(id2).containsKey(i)) {
+                return 10;
+            }
+        }
+        for (int i : beforeData.get(id1).keySet()) {
+            if (i == id1 || i == id2) {
+                continue;
+            }
+            if (!Objects.equals(beforeData.get(id1).get(i), afterData.get(id1).get(i))) {
+                return 11;
+            }
+        }
+        for (int i : beforeData.get(id2).keySet()) {
+            if (i == id1 || i == id2) {
+                continue;
+            }
+            if (!Objects.equals(beforeData.get(id2).get(i), afterData.get(id2).get(i))) {
+                return 12;
+            }
+        }
         return 0;
     }
 
+    private int okTestPart2(int id1, int id2, int value,
+                            HashMap<Integer, HashMap<Integer, Integer>> beforeData,
+                            HashMap<Integer, HashMap<Integer, Integer>> afterData) {
+        int res = test1to3(id1, id2, beforeData, afterData);
+        if (res > 0) {
+            return res;
+        }
+        if (afterData.get(id1).containsKey(id2) || afterData.get(id2).containsKey(id1)) {
+            return 15;
+        }
+        if (beforeData.get(id1).size() + 1 != afterData.get(id1).size()) {
+            return 16;
+        }
+        if (beforeData.get(id2).size() + 1 != afterData.get(id2).size()) {
+            return 17;
+        }
+        for (int i : afterData.get(id1).keySet()) {
+            if (!beforeData.get(i).equals(afterData.get(i))) {
+                return 20;
+            }
+        }
+        for (int i : afterData.get(id2).keySet()) {
+            if (!beforeData.get(i).equals(afterData.get(i))) {
+                return 21;
+            }
+        }
+        return 0;
+    }
+
+    private int test1to3(int id1, int id2,
+                         HashMap<Integer, HashMap<Integer, Integer>> beforeData,
+                         HashMap<Integer, HashMap<Integer, Integer>> afterData) {
+        if (beforeData.size() != afterData.size()) {
+            return 1;
+        }
+        for (int i : beforeData.keySet()) {
+            if (!afterData.containsKey(i)) {
+                return 2;
+            }
+        }
+        for (int i : beforeData.keySet()) {
+            if (i == id1 || i == id2) {
+                continue;
+            }
+            if (!beforeData.get(i).equals(afterData.get(i))) {
+                return 3;
+            }
+        }
+        return 0;
+    }
 }
