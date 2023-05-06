@@ -464,12 +464,12 @@ public class MyNetwork implements Network {
             return 17;
         }
         for (int i : afterData.get(id1).keySet()) {
-            if (!beforeData.get(i).equals(afterData.get(i))) {
+            if (!afterData.get(i).equals(beforeData.get(i))) {
                 return 20;
             }
         }
         for (int i : afterData.get(id2).keySet()) {
-            if (!beforeData.get(i).equals(afterData.get(i))) {
+            if (!afterData.get(i).equals(beforeData.get(i))) {
                 return 21;
             }
         }
