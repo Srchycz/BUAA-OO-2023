@@ -406,10 +406,10 @@ public class MyNetwork implements Network {
         if (!beforeData.get(id1).containsKey(id2) || !afterData.get(id2).containsKey(id1)) {
             return 4;
         }
-        if (beforeData.get(id1).get(id2) + value != afterData.get(id2).get(id1)) {
+        if (beforeData.get(id1).get(id2) + value != afterData.get(id1).get(id2)) {
             return 5;
         }
-        if (beforeData.get(id2).get(id1) + value != afterData.get(id1).get(id2)) {
+        if (beforeData.get(id2).get(id1) + value != afterData.get(id2).get(id1)) {
             return 6;
         }
         if (beforeData.get(id1).size() != afterData.get(id1).size()) {
