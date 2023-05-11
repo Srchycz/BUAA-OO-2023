@@ -457,10 +457,10 @@ public class MyNetwork implements Network {
         if (afterData.get(id1).containsKey(id2) || afterData.get(id2).containsKey(id1)) {
             return 15;
         }
-        if (beforeData.get(id1).size() + 1 != afterData.get(id1).size()) {
+        if (beforeData.get(id1).size() != afterData.get(id1).size() + 1) {
             return 16;
         }
-        if (beforeData.get(id2).size() + 1 != afterData.get(id2).size()) {
+        if (beforeData.get(id2).size() != afterData.get(id2).size() + 1) {
             return 17;
         }
         for (int i : afterData.get(id1).keySet()) {
