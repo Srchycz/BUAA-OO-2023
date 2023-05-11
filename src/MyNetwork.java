@@ -1,41 +1,21 @@
-import com.oocourse.spec2.exceptions.EqualMessageIdException;
-import com.oocourse.spec2.exceptions.EqualGroupIdException;
-import com.oocourse.spec2.exceptions.MessageIdNotFoundException;
-import com.oocourse.spec2.exceptions.EqualRelationException;
-import com.oocourse.spec2.exceptions.AcquaintanceNotFoundException;
-import com.oocourse.spec2.exceptions.PersonIdNotFoundException;
-import com.oocourse.spec2.exceptions.GroupIdNotFoundException;
-import com.oocourse.spec2.exceptions.EqualPersonIdException;
-import com.oocourse.spec2.exceptions.RelationNotFoundException;
-import com.oocourse.spec2.main.Group;
-import com.oocourse.spec2.main.Message;
-import com.oocourse.spec2.main.Network;
-import com.oocourse.spec2.main.Person;
-import exception.MyEqualMessageIdException;
-import exception.MyEqualGroupIdException;
-import exception.MyMessageIdNotFoundException;
-import exception.MyAcquaintanceNotFoundException;
-import exception.MyPersonIdNotFoundException;
-import exception.MyEqualPersonIdException;
-import exception.MyGroupIdNotFoundException;
-import exception.MyRelationNotFoundException;
-import exception.MyEqualRelationException;
+import com.oocourse.spec3.exceptions.*;
+import com.oocourse.spec3.main.Group;
+import com.oocourse.spec3.main.Message;
+import com.oocourse.spec3.main.Network;
+import com.oocourse.spec3.main.Person;
+import exception.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MyNetwork implements Network {
     private int blockSum;
     private int tripleSum;
     private boolean blockUpdate;
     private boolean tripleUpdate;
-    private final HashMap<Integer, Person> people;
-    private final HashMap<Integer, Group> groups;
-    private final HashMap<Integer, Message> messages;
+    private final HashMap<Integer, Person> people;//id->person
+    private final HashMap<Integer, Group> groups;//id->group
+    private final HashMap<Integer, Message> messages;//id->message
+    private final HashMap<Integer, Integer> emojiIdMap;//emojiId->emojiHeat
 
     public MyNetwork() {
         this.blockSum = 0;
@@ -45,6 +25,8 @@ public class MyNetwork implements Network {
         this.people = new HashMap<>();
         this.groups = new HashMap<>();
         this.messages = new HashMap<>();
+        this.emojiIdMap = new HashMap<>();
+        this.emojiHeatMap = new HashMap<>();
     }
 
     public boolean contains(int id) {
@@ -380,121 +362,93 @@ public class MyNetwork implements Network {
         return res >> 1;
     }
 
-    public int modifyRelationOKTest(int id1, int id2, int value,
-                                    HashMap<Integer, HashMap<Integer, Integer>> beforeData,
-                                    HashMap<Integer, HashMap<Integer, Integer>> afterData) {
-        if (beforeData.containsKey(id1) && beforeData.containsKey(id2) && id1 != id2 &&
-                beforeData.get(id1).containsKey(id2) && beforeData.get(id1).get(id2) + value > 0) {
-            return okTestPart1(id1, id2, value, beforeData, afterData);
-        }
-        else if (beforeData.containsKey(id1) && beforeData.containsKey(id2) && id1 != id2 &&
-            beforeData.get(id1).containsKey(id2) && beforeData.get(id1).get(id2) + value <= 0) {
-            return okTestPart2(id1, id2, value, beforeData, afterData);
-        }
-        else {
-            return beforeData.equals(afterData) ? 0 : -1;
-        }
+    public boolean containsEmojiId(int id) {
+        return emojiIdMap.containsKey(id);
     }
 
-    private int okTestPart1(int id1, int id2, int value,
-                            HashMap<Integer, HashMap<Integer, Integer>> beforeData,
-                            HashMap<Integer, HashMap<Integer, Integer>> afterData) {
-        int res = test1to3(id1, id2, beforeData, afterData);
-        if (res > 0) {
-            return res;
+    public void storeEmojiId(int id) throws EqualEmojiIdException {
+        if (containsEmojiId(id)) {
+            throw new MyEqualEmojiIdException(id);
         }
-        if (!beforeData.get(id1).containsKey(id2) || !afterData.get(id2).containsKey(id1)) {
-            return 4;
+        emojiIdMap.put(id, 0);
+    }
+
+    public int queryMoney(int id) throws PersonIdNotFoundException {
+        if (!contains(id)) {
+            throw new MyPersonIdNotFoundException(id);
         }
-        if (beforeData.get(id1).get(id2) + value != afterData.get(id2).get(id1)) {
-            return 5;
+        return getPerson(id).getMoney();
+    }
+
+    public int queryPopularity(int id) throws EmojiIdNotFoundException {
+        if (!containsEmojiId(id)) {
+            throw new MyEmojiIdNotFoundException(id);
         }
-        if (beforeData.get(id2).get(id1) + value != afterData.get(id1).get(id2)) {
-            return 6;
-        }
-        if (beforeData.get(id1).size() != afterData.get(id1).size()) {
-            return 7;
-        }
-        if (beforeData.get(id2).size() != afterData.get(id2).size()) {
-            return 8;
-        }
-        for (int i : beforeData.get(id1).keySet()) {
-            if (!afterData.get(id1).containsKey(i)) {
-                return 9;
+        return emojiIdMap.get(id);
+    }
+
+    /*@ public normal_behavior
+      @ assignable emojiIdList, emojiHeatList, messages;
+      @ 1 ensures (\forall int i; 0 <= i && i < \old(emojiIdList.length);
+      @          (\old(emojiHeatList[i] >= limit) ==>
+      @          (\exists int j; 0 <= j && j < emojiIdList.length; emojiIdList[j] == \old(emojiIdList[i]))));
+      @ 2 ensures (\forall int i; 0 <= i && i < emojiIdList.length;
+      @          (\exists int j; 0 <= j && j < \old(emojiIdList.length);
+      @          emojiIdList[i] == \old(emojiIdList[j]) && emojiHeatList[i] == \old(emojiHeatList[j])));
+      @ 3 ensures emojiIdList.length ==
+      @          (\num_of int i; 0 <= i && i < \old(emojiIdList.length); emojiHeatList[i] >= limit);
+      @ 4 ensures emojiIdList.length == emojiHeatList.length;
+      @ 5 ensures (\forall int i; 0 <= i && i < \old(messages.length);
+      @          (\old(messages[i]) instanceof EmojiMessage &&
+      @           containsEmojiId(\old(((EmojiMessage)messages[i]).getEmojiId()))  ==> \not_assigned(\old(messages[i])) &&
+      @           (\exists int j; 0 <= j && j < messages.length; messages[j].equals(\old(messages[i])))));
+      @ 6 ensures (\forall int i; 0 <= i && i < \old(messages.length);
+      @          (!(\old(messages[i]) instanceof EmojiMessage) ==> \not_assigned(\old(messages[i])) &&
+      @           (\exists int j; 0 <= j && j < messages.length; messages[j].equals(\old(messages[i])))));
+      @ 7 ensures messages.length == (\num_of int i; 0 <= i && i <= \old(messages.length);
+      @          (\old(messages[i]) instanceof EmojiMessage) ==>
+      @           (containsEmojiId(\old(((EmojiMessage)messages[i]).getEmojiId()))));
+      @ 8 ensures \result == emojiIdList.length;
+      @*/
+    public int deleteColdEmoji(int limit) {
+        // delete emojiId
+        for(Map.Entry<Integer, Integer> i : emojiIdMap.entrySet()) {
+            if (i.getValue() < limit) {
+                emojiIdMap.remove(i.getKey());
             }
         }
-        for (int i : beforeData.get(id2).keySet()) {
-            if (!afterData.get(id2).containsKey(i)) {
-                return 10;
+        // delete messages (lazy deletion?)
+        for(Map.Entry<Integer, Message> i : messages.entrySet()) {
+            if (i.getValue() instanceof MyEmojiMessage) {
+                MyEmojiMessage m = (MyEmojiMessage) i.getValue();
+                if (!containsEmojiId(m.getEmojiId())) {
+                    messages.remove(i.getKey());
+                }
             }
         }
-        for (int i : beforeData.get(id1).keySet()) {
-            if (i == id1 || i == id2) {
-                continue;
-            }
-            if (!Objects.equals(beforeData.get(id1).get(i), afterData.get(id1).get(i))) {
-                return 11;
-            }
+        return emojiIdMap.size();
+    }
+
+    public void clearNotices(int personId) throws PersonIdNotFoundException {
+        if (!contains(personId)) {
+            throw new MyPersonIdNotFoundException(personId);
         }
-        for (int i : beforeData.get(id2).keySet()) {
-            if (i == id1 || i == id2) {
-                continue;
-            }
-            if (!Objects.equals(beforeData.get(id2).get(i), afterData.get(id2).get(i))) {
-                return 12;
-            }
+        ((MyPerson) getPerson(personId)).clearNotices();
+    }
+
+    public int queryLeastMoments(int id) throws PersonIdNotFoundException, PathNotFoundException {
+        if (!contains(id)) {
+            throw new MyPersonIdNotFoundException(id);
         }
+        int result = GraphHandle.queryLeastMoment(id, people);
+        if (result == -1) {
+            throw new MyPathNotFoundException(id);
+        }
+        return result;
+    }
+
+    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData, ArrayList<HashMap<Integer, Integer>> afterData, int result) {
         return 0;
     }
 
-    private int okTestPart2(int id1, int id2, int value,
-                            HashMap<Integer, HashMap<Integer, Integer>> beforeData,
-                            HashMap<Integer, HashMap<Integer, Integer>> afterData) {
-        int res = test1to3(id1, id2, beforeData, afterData);
-        if (res > 0) {
-            return res;
-        }
-        if (afterData.get(id1).containsKey(id2) || afterData.get(id2).containsKey(id1)) {
-            return 15;
-        }
-        if (beforeData.get(id1).size() + 1 != afterData.get(id1).size()) {
-            return 16;
-        }
-        if (beforeData.get(id2).size() + 1 != afterData.get(id2).size()) {
-            return 17;
-        }
-        for (int i : afterData.get(id1).keySet()) {
-            if (!afterData.get(i).equals(beforeData.get(i))) {
-                return 20;
-            }
-        }
-        for (int i : afterData.get(id2).keySet()) {
-            if (!afterData.get(i).equals(beforeData.get(i))) {
-                return 21;
-            }
-        }
-        return 0;
-    }
-
-    private int test1to3(int id1, int id2,
-                         HashMap<Integer, HashMap<Integer, Integer>> beforeData,
-                         HashMap<Integer, HashMap<Integer, Integer>> afterData) {
-        if (beforeData.size() != afterData.size()) {
-            return 1;
-        }
-        for (int i : beforeData.keySet()) {
-            if (!afterData.containsKey(i)) {
-                return 2;
-            }
-        }
-        for (int i : beforeData.keySet()) {
-            if (i == id1 || i == id2) {
-                continue;
-            }
-            if (!beforeData.get(i).equals(afterData.get(i))) {
-                return 3;
-            }
-        }
-        return 0;
-    }
 }

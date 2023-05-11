@@ -1,6 +1,6 @@
 package exception;
 
-import com.oocourse.spec2.exceptions.GroupIdNotFoundException;
+import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
 
 public class MyGroupIdNotFoundException extends GroupIdNotFoundException {
     private final int id;

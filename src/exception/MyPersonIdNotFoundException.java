@@ -1,6 +1,6 @@
 package exception;
 
-import com.oocourse.spec2.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
 
 public class MyPersonIdNotFoundException extends PersonIdNotFoundException {
     private final int id;

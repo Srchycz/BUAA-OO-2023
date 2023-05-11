@@ -1,5 +1,5 @@
-import com.oocourse.spec2.main.Message;
-import com.oocourse.spec2.main.Person;
+import com.oocourse.spec3.main.Message;
+import com.oocourse.spec3.main.Person;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,6 +10,7 @@ public class MyPerson implements Person {
     private final int id;
     private final String name;
     private final int age;
+    private int money;
     private final HashMap<Integer, Person> acquaintance;
     private final HashMap<Integer, Integer> values;
 
@@ -25,6 +26,7 @@ public class MyPerson implements Person {
         this.values = new HashMap<>();
         this.socialValue = 0;
         this.messages = new LinkedList<>();
+        this.money = 0;
     }
 
     public int getId() { return this.id; }
@@ -52,6 +54,13 @@ public class MyPerson implements Person {
     public int queryValue(Person person) {
         if (acquaintance.containsKey(person.getId())) {
             return values.get(person.getId());
+        }
+        return 0;
+    }
+
+    public int queryValue(int id) {
+        if (acquaintance.containsKey(id)) {
+            return values.get(id);
         }
         return 0;
     }
@@ -115,4 +124,19 @@ public class MyPerson implements Person {
         return res;
     }
 
+    /*@ public normal_behavior
+  @ assignable money;
+  @ ensures money == \old(money) + num;
+  @*/
+    public void addMoney(int num) {
+        money += num;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void clearNotices() {
+        messages.removeIf(message -> message instanceof MyNoticeMessage);
+    }
 }

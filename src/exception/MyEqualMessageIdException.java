@@ -1,6 +1,6 @@
 package exception;
 
-import com.oocourse.spec2.exceptions.EqualMessageIdException;
+import com.oocourse.spec3.exceptions.EqualMessageIdException;
 
 public class MyEqualMessageIdException extends EqualMessageIdException {
     private final int id;
