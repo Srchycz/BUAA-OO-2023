@@ -1,6 +1,7 @@
 package exception;
 
 import com.oocourse.spec3.exceptions.EmojiIdNotFoundException;
+
 public class MyEmojiIdNotFoundException extends EmojiIdNotFoundException {
     private final int id;
 

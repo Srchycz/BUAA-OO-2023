@@ -1,6 +1,7 @@
 package exception;
 
 import com.oocourse.spec3.exceptions.EqualEmojiIdException;
+
 public class MyEqualEmojiIdException extends EqualEmojiIdException {
     private final int id;
     private static final Counter counter = new Counter();

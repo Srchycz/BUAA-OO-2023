@@ -1,7 +1,8 @@
 package exception;
 
 import com.oocourse.spec3.exceptions.PathNotFoundException;
-public class MyPathNotFoundException extends PathNotFoundException{
+
+public class MyPathNotFoundException extends PathNotFoundException {
     private final int id;
     private static final Counter counter = new Counter();
 
