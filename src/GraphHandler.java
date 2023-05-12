@@ -1,16 +1,18 @@
 import com.oocourse.spec3.main.Person;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
-public class GraphHandle {
+public class GraphHandler {
     private static void update(Path path, Path newPath) {
-        if (newPath.getDist1() > path.getDist1()) {
+        if (newPath.getDist1() < path.getDist1()) {
             if (newPath.getOrigin1() != path.getOrigin1()) {
                 path.update();
             }
             path.set1(newPath);
         }
-        else if (newPath.getDist1() > path.getDist2()) {
+        else if (newPath.getDist1() < path.getDist2()) {
             if (newPath.getOrigin1() != path.getOrigin1()) {
                 path.set2(newPath);
             }
@@ -27,7 +29,7 @@ public class GraphHandle {
         }
         vis.replace(id, true);
         MyPerson p = (MyPerson) people.get(id);
-        for(Integer i : p.getAcquaintance().keySet()) {
+        for (Integer i : p.getAcquaintance().keySet()) {
             paths.get(i).setDist1(p.queryValue(i));
             paths.get(i).setOrigin1(i);
         }
@@ -51,11 +53,9 @@ public class GraphHandle {
                 if (!vis.get(j)) {
                     int value = minPerson.queryValue(j);
                     Path path = paths.get(j);
-                    if (value > 0 && paths.get(j).getDist1() > nowPath.getDist1() + value) {
-                        update(path, new Path(nowPath.getDist1() + value, minId));
-                    }
-                    if (value > 0 && paths.get(j).getDist2() > paths.get(minId).getDist2() + value) {
-                        update(path, new Path(nowPath.getDist2() + value, minId));
+                    if (value > 0) {
+                        update(path, new Path(nowPath.getDist1() + value, nowPath.getOrigin1()));
+                        update(path, new Path(nowPath.getDist2() + value, nowPath.getOrigin2()));
                     }
                 }
             }
@@ -68,5 +68,42 @@ public class GraphHandle {
             }
         }
         return res == 0x3f3f3f3f ? -1 : res;
+    }
+
+    public static boolean isCircle(int id1, int id2, HashMap<Integer, Person> people) {
+        HashMap<Integer, Integer> vis = new HashMap<>();
+        vis.put(id1, id1);
+        vis.put(id2, id2);
+        Queue<Person> q1 = new LinkedList<>();
+        Queue<Person> q2 = new LinkedList<>();
+        q1.offer(people.get(id1));
+        q2.offer(people.get(id2));
+        while (!q1.isEmpty() && !q2.isEmpty()) {
+            MyPerson now1 = (MyPerson) q1.poll();
+            if (bfs(id2, id1, vis, q1, now1, people)) {
+                return true;
+            }
+            MyPerson now2 = (MyPerson) q2.poll();
+            assert now2 != null;
+            if (bfs(id1, id2, vis, q2, now2, people)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean bfs(int aim, int id, HashMap<Integer, Integer> vis,
+                               Queue<Person> queue, MyPerson now, HashMap<Integer, Person> people) {
+        for (int i : now.getAcquaintance().keySet()) {
+            if (vis.containsKey(i)) {
+                if (vis.get(i) == aim) {
+                    return true;
+                }
+                continue;
+            }
+            vis.put(i, id);
+            queue.offer(people.get(i));
+        }
+        return false;
     }
 }

@@ -1,11 +1,37 @@
-import com.oocourse.spec3.exceptions.*;
+import com.oocourse.spec3.exceptions.EqualGroupIdException;
+import com.oocourse.spec3.exceptions.EqualMessageIdException;
+import com.oocourse.spec3.exceptions.EqualPersonIdException;
+import com.oocourse.spec3.exceptions.EqualRelationException;
+import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec3.exceptions.EqualEmojiIdException;
+import com.oocourse.spec3.exceptions.PathNotFoundException;
+import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
+import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
+import com.oocourse.spec3.exceptions.EmojiIdNotFoundException;
+import com.oocourse.spec3.exceptions.AcquaintanceNotFoundException;
+import com.oocourse.spec3.exceptions.RelationNotFoundException;
 import com.oocourse.spec3.main.Group;
 import com.oocourse.spec3.main.Message;
 import com.oocourse.spec3.main.Network;
 import com.oocourse.spec3.main.Person;
-import exception.*;
+import exception.MyEqualRelationException;
+import exception.MyEqualPersonIdException;
+import exception.MyEqualGroupIdException;
+import exception.MyEqualMessageIdException;
+import exception.MyEqualEmojiIdException;
+import exception.MyRelationNotFoundException;
+import exception.MyPersonIdNotFoundException;
+import exception.MyGroupIdNotFoundException;
+import exception.MyMessageIdNotFoundException;
+import exception.MyEmojiIdNotFoundException;
+import exception.MyPathNotFoundException;
+import exception.MyAcquaintanceNotFoundException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.List;
 
 public class MyNetwork implements Network {
     private int blockSum;
@@ -26,7 +52,6 @@ public class MyNetwork implements Network {
         this.groups = new HashMap<>();
         this.messages = new HashMap<>();
         this.emojiIdMap = new HashMap<>();
-        this.emojiHeatMap = new HashMap<>();
     }
 
     public boolean contains(int id) {
@@ -118,39 +143,7 @@ public class MyNetwork implements Network {
         if (id1 == id2) {
             return true;
         }
-        HashMap<Integer, Integer> vis = new HashMap<>();
-        vis.put(id1, id1);
-        vis.put(id2, id2);
-        Queue<Person> q1 = new LinkedList<>();
-        Queue<Person> q2 = new LinkedList<>();
-        q1.offer(getPerson(id1));
-        q2.offer(getPerson(id2));
-        while (!q1.isEmpty() && !q2.isEmpty()) {
-            MyPerson now1 = (MyPerson) q1.poll();
-            if (bfs(id2, id1, vis, q1, now1)) {
-                return true;
-            }
-            MyPerson now2 = (MyPerson) q2.poll();
-            if (bfs(id1, id2, vis, q2, now2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean bfs(int aim, int id,
-                        HashMap<Integer, Integer> vis, Queue<Person> queue, MyPerson now) {
-        for (int i : now.getAcquaintance().keySet()) {
-            if (vis.containsKey(i)) {
-                if (vis.get(i) == aim) {
-                    return true;
-                }
-                continue;
-            }
-            vis.put(i, id);
-            queue.offer(getPerson(i));
-        }
-        return false;
+        return GraphHandler.isCircle(id1, id2, people);
     }
 
     public int queryBlockSum() {
@@ -276,9 +269,15 @@ public class MyNetwork implements Network {
     }
 
     public void addMessage(Message message) throws
-            EqualMessageIdException, EqualPersonIdException {
+            EqualMessageIdException, EmojiIdNotFoundException, EqualPersonIdException {
         if (containsMessage(message.getId())) {
             throw new MyEqualMessageIdException(message.getId());
+        }
+        if (message instanceof MyEmojiMessage) {
+            MyEmojiMessage emojiMessage = (MyEmojiMessage) message;
+            if (!containsEmojiId(emojiMessage.getEmojiId())) {
+                throw new MyEmojiIdNotFoundException(emojiMessage.getEmojiId());
+            }
         }
         if (message.getType() == 0 && message.getPerson1().equals(message.getPerson2())) {
             throw new MyEqualPersonIdException(message.getPerson1().getId());
@@ -312,9 +311,30 @@ public class MyNetwork implements Network {
             person1.addSocialValue(message.getSocialValue());
             person2.addSocialValue(message.getSocialValue());
             ((MyPerson) person2).addMessage(message);
+            if (message instanceof MyRedEnvelopeMessage) {
+                int money = ((MyRedEnvelopeMessage) message).getMoney();
+                person1.addMoney(-money);
+                person2.addMoney(money);
+            }
+            if (message instanceof MyEmojiMessage) {
+                int emojiId = ((MyEmojiMessage) message).getEmojiId();
+                emojiIdMap.replace(emojiId, emojiIdMap.get(emojiId) + 1);
+            }
         }
         else {
             ((MyGroup) message.getGroup()).addSocialValue(message.getSocialValue());
+            if (message instanceof MyRedEnvelopeMessage) {
+                int money = ((MyRedEnvelopeMessage) message).getMoney();
+                int size = message.getGroup().getSize();
+                int moneyPerPerson = money / size;
+                Person person1 = message.getPerson1();
+                person1.addMoney(-moneyPerPerson * (size - 1));
+                ((MyGroup) message.getGroup()).addMoney(moneyPerPerson, person1.getId());
+            }
+            if (message instanceof MyEmojiMessage) {
+                int emojiId = ((MyEmojiMessage) message).getEmojiId();
+                emojiIdMap.replace(emojiId, emojiIdMap.get(emojiId) + 1);
+            }
         }
         messages.remove(message.getId());
     }
@@ -387,38 +407,15 @@ public class MyNetwork implements Network {
         return emojiIdMap.get(id);
     }
 
-    /*@ public normal_behavior
-      @ assignable emojiIdList, emojiHeatList, messages;
-      @ 1 ensures (\forall int i; 0 <= i && i < \old(emojiIdList.length);
-      @          (\old(emojiHeatList[i] >= limit) ==>
-      @          (\exists int j; 0 <= j && j < emojiIdList.length; emojiIdList[j] == \old(emojiIdList[i]))));
-      @ 2 ensures (\forall int i; 0 <= i && i < emojiIdList.length;
-      @          (\exists int j; 0 <= j && j < \old(emojiIdList.length);
-      @          emojiIdList[i] == \old(emojiIdList[j]) && emojiHeatList[i] == \old(emojiHeatList[j])));
-      @ 3 ensures emojiIdList.length ==
-      @          (\num_of int i; 0 <= i && i < \old(emojiIdList.length); emojiHeatList[i] >= limit);
-      @ 4 ensures emojiIdList.length == emojiHeatList.length;
-      @ 5 ensures (\forall int i; 0 <= i && i < \old(messages.length);
-      @          (\old(messages[i]) instanceof EmojiMessage &&
-      @           containsEmojiId(\old(((EmojiMessage)messages[i]).getEmojiId()))  ==> \not_assigned(\old(messages[i])) &&
-      @           (\exists int j; 0 <= j && j < messages.length; messages[j].equals(\old(messages[i])))));
-      @ 6 ensures (\forall int i; 0 <= i && i < \old(messages.length);
-      @          (!(\old(messages[i]) instanceof EmojiMessage) ==> \not_assigned(\old(messages[i])) &&
-      @           (\exists int j; 0 <= j && j < messages.length; messages[j].equals(\old(messages[i])))));
-      @ 7 ensures messages.length == (\num_of int i; 0 <= i && i <= \old(messages.length);
-      @          (\old(messages[i]) instanceof EmojiMessage) ==>
-      @           (containsEmojiId(\old(((EmojiMessage)messages[i]).getEmojiId()))));
-      @ 8 ensures \result == emojiIdList.length;
-      @*/
     public int deleteColdEmoji(int limit) {
         // delete emojiId
-        for(Map.Entry<Integer, Integer> i : emojiIdMap.entrySet()) {
+        for (Map.Entry<Integer, Integer> i : emojiIdMap.entrySet()) {
             if (i.getValue() < limit) {
                 emojiIdMap.remove(i.getKey());
             }
         }
-        // delete messages (lazy deletion?)
-        for(Map.Entry<Integer, Message> i : messages.entrySet()) {
+        // delete messages
+        for (Map.Entry<Integer, Message> i : messages.entrySet()) {
             if (i.getValue() instanceof MyEmojiMessage) {
                 MyEmojiMessage m = (MyEmojiMessage) i.getValue();
                 if (!containsEmojiId(m.getEmojiId())) {
@@ -440,14 +437,59 @@ public class MyNetwork implements Network {
         if (!contains(id)) {
             throw new MyPersonIdNotFoundException(id);
         }
-        int result = GraphHandle.queryLeastMoment(id, people);
+        int result = GraphHandler.queryLeastMoment(id, people);
         if (result == -1) {
             throw new MyPathNotFoundException(id);
         }
         return result;
     }
 
-    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData, ArrayList<HashMap<Integer, Integer>> afterData, int result) {
+    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData,
+                                     ArrayList<HashMap<Integer, Integer>> afterData, int result) {
+        HashMap<Integer, Integer> beforeEmojiId = beforeData.get(0);
+        HashMap<Integer, Integer> afterEmojiId = afterData.get(0);
+        int count = 0;
+        for (int i : beforeEmojiId.keySet()) {
+            if (beforeEmojiId.get(i) >= limit) {
+                ++ count;
+                if (!afterEmojiId.containsKey(i)) {
+                    return 1;
+                }
+            }
+        }
+        for (int i : afterEmojiId.keySet()) {
+            if (!beforeEmojiId.containsKey(i)) {
+                return 2;
+            }
+            if (!Objects.equals(afterEmojiId.get(i), beforeEmojiId.get(i))) {
+                return 2;
+            }
+        }
+        if (count != afterEmojiId.size()) {
+            return 3;
+        }
+        HashMap<Integer, Integer> beforeMessage = beforeData.get(1);
+        HashMap<Integer, Integer> afterMessage = afterData.get(1);
+        for (int i : beforeMessage.keySet()) {
+            if (beforeMessage.get(i) == null) {
+                ++ count;
+                if (!afterMessage.containsKey(i) || afterMessage.get(i) != null) {
+                    return 6;
+                }
+            }
+            if (afterEmojiId.containsKey(beforeMessage.get(i))) {
+                if (!afterMessage.containsKey(i) ||
+                        !Objects.equals(afterMessage.get(i), beforeMessage.get(i))) {
+                    return 5;
+                }
+            }
+        }
+        if (count != afterMessage.size()) {
+            return 7;
+        }
+        if (result != afterEmojiId.size()) {
+            return 8;
+        }
         return 0;
     }
 

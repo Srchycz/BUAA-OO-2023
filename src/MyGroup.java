@@ -82,4 +82,13 @@ public class MyGroup implements Group {
             i.getValue().addSocialValue(num);
         }
     }
+
+    public void addMoney(int num, int id) {
+        for (Map.Entry<Integer, Person> i : people.entrySet()) {
+            if (i.getKey() == id) {
+                continue;
+            }
+            i.getValue().addMoney(num);
+        }
+    }
 }
