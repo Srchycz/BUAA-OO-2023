@@ -409,20 +409,10 @@ public class MyNetwork implements Network {
 
     public int deleteColdEmoji(int limit) {
         // delete emojiId
-        for (Map.Entry<Integer, Integer> i : emojiIdMap.entrySet()) {
-            if (i.getValue() < limit) {
-                emojiIdMap.remove(i.getKey());
-            }
-        }
+        emojiIdMap.entrySet().removeIf(i -> i.getValue() < limit);
         // delete messages
-        for (Map.Entry<Integer, Message> i : messages.entrySet()) {
-            if (i.getValue() instanceof MyEmojiMessage) {
-                MyEmojiMessage m = (MyEmojiMessage) i.getValue();
-                if (!containsEmojiId(m.getEmojiId())) {
-                    messages.remove(i.getKey());
-                }
-            }
-        }
+        messages.entrySet().removeIf(i -> i.getValue() instanceof MyEmojiMessage
+                && !containsEmojiId(((MyEmojiMessage) i.getValue()).getEmojiId()));
         return emojiIdMap.size();
     }
 
