@@ -76,7 +76,7 @@ public class GraphHandler {
         }
         //get result
         int res = 0x3f3f3f3f;
-        for(Integer i : people.keySet()) {
+        for (Integer i : people.keySet()) {
             if (i == id) {
                 continue;
             }
