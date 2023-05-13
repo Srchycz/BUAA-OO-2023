@@ -463,14 +463,18 @@ public class MyNetwork implements Network {
         for (int i : beforeMessage.keySet()) {
             if (beforeMessage.get(i) == null) {
                 ++ count;
-                if (!afterMessage.containsKey(i) || afterMessage.get(i) != null) {
-                    return 6;
-                }
             }
             if (afterEmojiId.containsKey(beforeMessage.get(i))) {
                 if (!afterMessage.containsKey(i) ||
                         !Objects.equals(afterMessage.get(i), beforeMessage.get(i))) {
                     return 5;
+                }
+            }
+        }
+        for (int i : beforeMessage.keySet()) {
+            if (beforeMessage.get(i) == null) {
+                if (!afterMessage.containsKey(i) || afterMessage.get(i) != null) {
+                    return 6;
                 }
             }
         }
