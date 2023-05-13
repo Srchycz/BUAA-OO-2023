@@ -1,22 +1,27 @@
 import com.oocourse.spec3.main.Person;
+import javafx.util.Pair;
 
+import java.util.PriorityQueue;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class GraphHandler {
-    private static void update(Path path, Path newPath) {
+    private static Boolean update(Path path, Path newPath) {
         if (newPath.getDist1() < path.getDist1()) {
             if (newPath.getOrigin1() != path.getOrigin1()) {
                 path.update();
             }
             path.set1(newPath);
+            return true;
         }
         else if (newPath.getDist1() < path.getDist2()) {
             if (newPath.getOrigin1() != path.getOrigin1()) {
                 path.set2(newPath);
             }
         }
+        return false;
     }
 
     public static int queryLeastMoment(int id, HashMap<Integer, Person> people) {
@@ -29,18 +34,21 @@ public class GraphHandler {
         }
         vis.replace(id, true);
         MyPerson p = (MyPerson) people.get(id);
+        PriorityQueue<Pair<Integer, Integer>> priorityQueue = new PriorityQueue<>(
+                Comparator.comparingInt(Pair::getValue));
         for (Integer i : p.getAcquaintance().keySet()) {
             paths.get(i).setDist1(p.queryValue(i));
             paths.get(i).setOrigin1(i);
+            priorityQueue.offer(new Pair<>(i, p.queryValue(i)));
         }
         //dijkstra
         for (int i = 1; i < people.size(); ++ i) {
-            int min = Integer.MAX_VALUE;
             int minId = -1;
-            for (Integer j : people.keySet()) {
-                if (!vis.get(j) && paths.get(j).getDist1() < min) {
-                    min = paths.get(j).getDist1();
-                    minId = j;
+            while (!priorityQueue.isEmpty()) {
+                Pair<Integer, Integer> pair = priorityQueue.poll();
+                if (!vis.get(pair.getKey())) {
+                    minId = pair.getKey();
+                    break;
                 }
             }
             if (minId == -1) {
@@ -54,18 +62,25 @@ public class GraphHandler {
                     int value = minPerson.queryValue(j);
                     Path path = paths.get(j);
                     if (value > 0) {
-                        update(path, new Path(nowPath.getDist1() + value, nowPath.getOrigin1()));
-                        update(path, new Path(nowPath.getDist2() + value, nowPath.getOrigin2()));
+                        if (update(path, new Path(nowPath.getDist1() + value,
+                                nowPath.getOrigin1()))) {
+                            priorityQueue.offer(new Pair<>(j, path.getDist1()));
+                        }
+                        if (update(path, new Path(nowPath.getDist2() + value,
+                                nowPath.getOrigin2()))) {
+                            priorityQueue.offer(new Pair<>(j, path.getDist1()));
+                        }
                     }
                 }
             }
         }
         //get result
         int res = 0x3f3f3f3f;
-        for (Integer i : people.keySet()) {
-            if (i != id) {
-                res = Math.min(res, paths.get(i).getDist2() + paths.get(i).getDist1());
+        for(Integer i : people.keySet()) {
+            if (i == id) {
+                continue;
             }
+            res = Math.min(res, paths.get(i).getDist1() + paths.get(i).getDist2());
         }
         return res == 0x3f3f3f3f ? -1 : res;
     }
