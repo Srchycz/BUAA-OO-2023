@@ -44,14 +44,16 @@ public class GraphHandler {
         //dijkstra
         for (int i = 1; i < people.size(); ++ i) {
             int minId = -1;
+            boolean flag = false;
             while (!priorityQueue.isEmpty()) {
                 Pair<Integer, Integer> pair = priorityQueue.poll();
                 if (!vis.get(pair.getKey())) {
+                    flag = true;
                     minId = pair.getKey();
                     break;
                 }
             }
-            if (minId == -1) {
+            if (!flag) {
                 break;
             }
             vis.replace(minId, true);

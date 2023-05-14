@@ -4,12 +4,16 @@ public class Path {
     private int dist2;
     private int origin1;
     private int origin2;
+    private boolean flag;
+    private boolean flag2;
 
     public Path() {
         this.dist1 = INF;
         this.dist2 = INF;
         this.origin1 = -1;
         this.origin2 = -1;
+        this.flag = false;
+        this.flag2 = false;
     }
 
     public Path(int dist1, int origin1) {
@@ -17,6 +21,8 @@ public class Path {
         this.dist2 = INF;
         this.origin1 = origin1;
         this.origin2 = -1;
+        this.flag = true;
+        this.flag2 = false;
     }
 
     public void update() {
@@ -27,11 +33,13 @@ public class Path {
     public void set1(Path p) {
         this.dist1 = p.getDist1();
         this.origin1 = p.getOrigin1();
+        this.flag = true;
     }
 
     public void set2(Path p) {
         this.dist2 = p.getDist1();
         this.origin2 = p.getOrigin1();
+        this.flag2 = true;
     }
 
     public int getDist1() {
@@ -40,6 +48,7 @@ public class Path {
 
     public void setDist1(int dist1) {
         this.dist1 = dist1;
+        this.flag = true;
     }
 
     public int getDist2() {
@@ -64,5 +73,19 @@ public class Path {
 
     public void setOrigin2(int origin2) {
         this.origin2 = origin2;
+    }
+
+    public boolean neqOri1(int ori1) {
+        if (!flag) {
+            return true;
+        }
+        return (ori1 != this.origin1);
+    }
+
+    public boolean neqOri2(int ori2) {
+        if (!flag2) {
+            return true;
+        }
+        return (ori2 != this.origin2);
     }
 }
