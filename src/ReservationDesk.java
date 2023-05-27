@@ -12,12 +12,10 @@ public class ReservationDesk {
         date = null;
     }
 
-    private static class ReservationDeskHolder {
-        private static final ReservationDesk INSTANCE = new ReservationDesk();
-    }
+    private static final ReservationDesk INSTANCE = new ReservationDesk();
 
     public static ReservationDesk getInstance() {
-        return ReservationDeskHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private final LinkedList<Request> requestsB;

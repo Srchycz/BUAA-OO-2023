@@ -12,12 +12,10 @@ public class Library {
         reservationDesk = ReservationDesk.getInstance();
     }
 
-    private static class LibraryHolder {
-        private static final Library INSTANCE = new Library();
-    }
+    private static final Library INSTANCE = new Library();
 
     public static Library getInstance() {
-        return LibraryHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private final HashMap<String, Student> students;

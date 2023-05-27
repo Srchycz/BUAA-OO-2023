@@ -6,12 +6,10 @@ public class Calendar {
         day = 1;
     }
 
-    private static class CalendarHolder {
-        private static final Calendar INSTANCE = new Calendar();
-    }
+    private static final Calendar INSTANCE = new Calendar();
 
     public static Calendar getInstance() {
-        return CalendarHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private int year;

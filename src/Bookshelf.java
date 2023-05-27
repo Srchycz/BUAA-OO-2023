@@ -12,12 +12,10 @@ public class Bookshelf {
         }
     }
 
-    private static class BookshelfHolder {
-        private static final Bookshelf INSTANCE = new Bookshelf();
-    }
+    private static final Bookshelf INSTANCE = new Bookshelf();
 
     public static Bookshelf getInstance() {
-        return BookshelfHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private final ArrayList<HashMap<String, Book>> books;

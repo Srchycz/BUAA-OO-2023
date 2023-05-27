@@ -7,12 +7,10 @@ public class SelfServiceMachine implements Collectible, Registrable {
         strandedBooks = new LinkedList<>();
     }
 
-    private static class SelfServiceMachineHolder {
-        private static final SelfServiceMachine INSTANCE = new SelfServiceMachine();
-    }
+    private static final SelfServiceMachine INSTANCE = new SelfServiceMachine();
 
     public static SelfServiceMachine getInstance() {
-        return SelfServiceMachineHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private LinkedList<Book> strandedBooks;

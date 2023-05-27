@@ -7,12 +7,10 @@ public class CirculationDesk implements Collectible, Registrable {
         strandedBooks = new LinkedList<>();
     }
 
-    private static class CirculationDeskHolder {
-        private static final CirculationDesk INSTANCE = new CirculationDesk();
-    }
+    private static final CirculationDesk INSTANCE = new CirculationDesk();
 
     public static CirculationDesk getInstance() {
-        return CirculationDeskHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private LinkedList<Book> strandedBooks;

@@ -7,12 +7,10 @@ public class LogisticsDivision implements Collectible {
         strandedBooks = new LinkedList<>();
     }
 
-    private static class LogisticsDivisionHolder {
-        private static final LogisticsDivision INSTANCE = new LogisticsDivision();
-    }
+    private static final LogisticsDivision INSTANCE = new LogisticsDivision();
 
     public static LogisticsDivision getInstance() {
-        return LogisticsDivisionHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private LinkedList<Book> strandedBooks;
