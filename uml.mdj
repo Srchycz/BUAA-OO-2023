@@ -391,7 +391,7 @@
 											"top": 384,
 											"width": 535.85009765625,
 											"height": 13,
-											"text": "-orderBook(type: Type, id: String, student): void",
+											"text": "-orderBook(type: Type, id: String, student: Student): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -9112,7 +9112,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -18,
-											"top": -104,
+											"top": -120,
 											"height": 13
 										},
 										{
@@ -9123,7 +9123,7 @@
 											},
 											"font": "Arial;13;1",
 											"left": 77,
-											"top": 55,
+											"top": 47,
 											"width": 132.69775390625,
 											"height": 13,
 											"text": "CalendarHolder"
@@ -9136,7 +9136,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 77,
-											"top": 70,
+											"top": 62,
 											"width": 132.69775390625,
 											"height": 13,
 											"text": "(from Calendar)"
@@ -9150,14 +9150,14 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -18,
-											"top": -104,
+											"top": -120,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 72,
-									"top": 48,
+									"top": 40,
 									"width": 142.69775390625,
 									"height": 40,
 									"stereotypeLabel": {
@@ -9194,7 +9194,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 77,
-											"top": 93,
+											"top": 85,
 											"width": 132.69775390625,
 											"height": 13,
 											"underline": true,
@@ -9204,7 +9204,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 72,
-									"top": 88,
+									"top": 80,
 									"width": 142.69775390625,
 									"height": 23
 								},
@@ -9219,7 +9219,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 72,
-									"top": 111,
+									"top": 103,
 									"width": 142.69775390625,
 									"height": 10
 								},
@@ -9235,7 +9235,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -9,
-									"top": -52,
+									"top": -60,
 									"width": 10,
 									"height": 10
 								},
@@ -9251,7 +9251,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -9,
-									"top": -52,
+									"top": -60,
 									"width": 10,
 									"height": 10
 								}
@@ -9259,7 +9259,7 @@
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 72,
-							"top": 48,
+							"top": 40,
 							"width": 142.69775390625,
 							"height": 73,
 							"showNamespace": true,
@@ -9293,7 +9293,7 @@
 								"$ref": "AAAAAAGIW0mr8471aks="
 							},
 							"lineStyle": 1,
-							"points": "143:121;144:207"
+							"points": "143:113;144:207"
 						},
 						{
 							"_type": "UMLClassView",
@@ -12538,8 +12538,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 195,
-									"top": 127,
+									"left": 191,
+									"top": 121,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -12559,8 +12559,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 207,
-									"top": 122,
+									"left": 203,
+									"top": 116,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -12580,8 +12580,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 170,
-									"top": 139,
+									"left": 165,
+									"top": 131,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -12687,7 +12687,7 @@
 								"$ref": "AAAAAAGIW0mr8471aks="
 							},
 							"lineStyle": 1,
-							"points": "168:121;184:144;167:207",
+							"points": "165:113;184:144;167:207",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGIXBv7zfkidGA="
@@ -14946,7 +14946,9 @@
 										"$ref": "AAAAAAGIWvdqfIPMSP8="
 									},
 									"name": "student",
-									"type": ""
+									"type": {
+										"$ref": "AAAAAAGIWvGjmbK1gYw="
+									}
 								},
 								{
 									"_type": "UMLParameter",
@@ -15477,18 +15479,6 @@
 									"_parent": {
 										"$ref": "AAAAAAGIWvwtKlGav4Y="
 									},
-									"tags": [
-										{
-											"_type": "Tag",
-											"_id": "AAAAAAGIWvwtKlGcD2Q=",
-											"_parent": {
-												"$ref": "AAAAAAGIWvwtKlGbgXE="
-											},
-											"name": "collection",
-											"kind": "string",
-											"value": "LinkedList"
-										}
-									],
 									"type": "LinkedList<Book>",
 									"direction": "return"
 								}

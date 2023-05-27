@@ -36,7 +36,7 @@ public class ReservationDesk {
                 addCount(student);
             }
         }
-        else {
+        else if (type == Type.C) {
             if (!student.hasBook(Type.C, id) && isValid(student)
                     && !hasBook(Type.C, id, student)) {
                 System.out.println(Calendar.getInstance().getDate() + " " + student.getId() +
